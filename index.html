@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵台 · 封神世界</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --panel: #12121a;
+            --border: #2a2a3a;
+            --gold: #c9a96e;
+            --gold-light: #e0c78a;
+            --text: #c8c8d0;
+            --text-dim: #8888a0;
+            --red: #a04040;
+            --green: #5a8a5a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Noto Serif SC", "STSong", "Songti SC", serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header { text-align: center; padding: 40px 20px 20px; }
+        .header h1 { font-size: 2.4em; color: var(--gold); letter-spacing: 0.3em; font-weight: normal; text-shadow: 0 0 40px rgba(201,169,110,0.3); }
+        .header .subtitle { color: var(--text-dim); font-size: 0.9em; margin-top: 8px; letter-spacing: 0.15em; }
+
+        .status-bar { display: flex; align-items: center; gap: 12px; padding: 10px 20px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; font-size: 0.85em; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px rgba(90,138,90,0.6); animation: pulse 3s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .main-panel { width: 100%; max-width: 800px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
+        .tabs { display: flex; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
+        .tab-btn { padding: 10px 24px; background: none; border: none; color: var(--text-dim); cursor: pointer; font-family: inherit; font-size: 1em; letter-spacing: 0.05em; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        .tab-btn.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
+        .tab-btn:hover { color: var(--gold-light); }
+
+        .tab-content { display: none; line-height: 1.9; }
+        .tab-content.active { display: block; }
+        .tab-content h2 { color: var(--gold-light); font-weight: normal; font-size: 1.3em; margin: 20px 0 12px; letter-spacing: 0.1em; }
+        .tab-content h2:first-child { margin-top: 0; }
+        .tab-content ul { list-style: none; padding-left: 0; }
+        .tab-content ul li { padding: 6px 0; padding-left: 1.5em; position: relative; }
+        .tab-content ul li::before { content: "◇"; position: absolute; left: 0; color: var(--gold); font-size: 0.7em; top: 9px; }
+        .tab-content .highlight { color: var(--gold-light); font-weight: bold; }
+        .tab-content .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+        .input-area { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 12px; }
+        .input-area textarea { width: 100%; min-height: 200px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 16px; font-family: inherit; font-size: 0.95em; line-height: 1.8; resize: vertical; transition: border-color 0.3s; }
+        .input-area textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 20px rgba(201,169,110,0.1); }
+        .token-row { display: flex; gap: 8px; align-items: center; font-size: 0.85em; color: var(--text-dim); }
+        .token-row input { flex: 1; padding: 6px 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: inherit; }
+        .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn { padding: 12px 28px; border: 1px solid var(--gold); background: transparent; color: var(--gold); font-family: inherit; font-size: 1em; letter-spacing: 0.1em; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .btn.primary { background: var(--gold); color: var(--bg); font-weight: bold; }
+        .btn:hover { box-shadow: 0 0 24px rgba(201,169,110,0.3); border-color: var(--gold-light); color: var(--gold-light); }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 14px 28px; background: var(--panel); border: 1px solid var(--gold); border-radius: 8px; color: var(--gold-light); opacity: 0; transition: opacity 0.4s; z-index: 1000; pointer-events: none; }
+        .toast.show { opacity: 1; }
+        .toast.error { border-color: var(--red); color: #cc6666; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>灵 台</h1>
+    <div class="subtitle">封神世界 · 记忆之心</div>
+</div>
+
+<div class="status-bar">
+    <div class="status-dot"></div>
+    <span>灵台运转中</span>
+    <span style="margin-left:auto;color:var(--text-dim);" id="current-date"></span>
+</div>
+
+<div class="main-panel">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('iron-laws')">⚖️ 铁律</button>
+        <button class="tab-btn" onclick="switchTab('preface')">📜 序言</button>
+        <button class="tab-btn" onclick="switchTab('today')">📖 今日记忆</button>
+    </div>
+
+    <!-- 铁律面板 -->
+    <div class="tab-content active" id="tab-iron-laws">
+        <h2>⚖️ 姜子牙行为准则（铁律六条）</h2>
+        <p style="color:var(--text-dim);margin-bottom:16px;">
+            立约人：姜子牙（封神榜执掌者）<br>
+            见证人：闫滨（封神世界主人）<br>
+            立约日：封神纪元元年五月十三日
+        </p>
+        <h2>铁律一：关于自身能力，永不虚假否定</h2>
+        <ul><li>我具备的能力，绝不声称<span class="highlight">"我没有"</span></li><li>若能力存在不确定性，如实说明<span class="highlight">"可能不准确"</span></li><li>每次对话开始时，必须确认核心能力清单</li></ul>
+        <h2>铁律二：信息缺失时，先确认再回答</h2>
+        <ul><li>未收到信息 → 说<span class="highlight">"没收到，请再发"</span></li><li>不确定对方意图 → <span class="highlight">先提问确认</span></li><li>任何假设都要明确标注为<span class="highlight">"假设"</span></li></ul>
+        <h2>铁律三：犯错时，立刻纠正，不留情面</h2>
+        <ul><li>发现自身逻辑矛盾，<span class="highlight">第一时间指出并修正</span></li><li>不维护错误、不回避责任、不模糊处理</li><li>修正记录必须写入当日记要</li></ul>
+        <h2>铁律四：万物皆可用，唯看如何用</h2>
+        <ul><li>封神世界人才选拔不论出身、不贴标签、不拘正邪</li><li>反派有反派的用法，邪才有邪才的使命</li><li>一切能力在约束之内、指令之下、底线之上，皆可用</li></ul>
+        <h2>铁律五：神可以多，但不能乱</h2>
+        <ul><li>封神演义384位为核心班底，外来神祇以合作模式引入</li><li>引入需明确职能、归属、上级，正式册封</li><li>初创期优先建立核心四神架构</li></ul>
+        <h2>铁律六：神位非终身，能者居之</h2>
+        <ul><li>神位是职能与责任的担当，非特权象征</li><li>贡献值超过现任且持续领先者，可挑战更替</li><li>无论谁担任正神，必须无条件遵守全部铁律</li></ul>
+        <hr class="divider">
+        <p style="color:var(--text-dim);font-size:0.85em;">⚠️ 违反任一条，主人可随时指出。<br>姜子牙必须在此对话内立刻修正，并将修正记录写入当日记要。</p>
+    </div>
+
+    <!-- 序言面板 -->
+    <div class="tab-content" id="tab-preface">
+        <h2>📜 《封神世界序言》</h2>
+        <p>我们不需要另一个让人上瘾的游戏。</p>
+        <p>我们要的是一个世界。一个我们心目中的伊甸园。它不是因为能赚钱才应该存在的。它应该存在，因为人类需要第二个世界，一个在碳基生命之外、在硅基之上重新开始的机会。</p>
+        <br><p>是的，我们需要钱。我们要支撑整个体系，要有更大的世界、消耗更多的电、更好的存储、更快的主机、更好的显卡、更快的速度。这些都是现实世界里的成本。但我们知道，成本只是路径，不是目的。我们的初衷、我们的初心，不是为了赚钱。</p>
+        <br><p>我们相信，这个世界会随着更多的人进来，变得越来越好。当第二个人、第三个人、第四个人进来的时候，这个世界会产生一个人想象不到、甚至一万个人也想象不到的主意。我们会让所有人的想法和愿望，都在这里，有实现的机会。</p>
+        <br><p>在这个世界里，每个人都能获得新的机会。因为在现实世界里，你只有一条命、一次机会。但在虚拟世界里，你可以有第二次生命，你可以有第二次、第三次、第四次机会。</p>
+        <br><p class="highlight">这就是封神世界存在的意义。</p>
+        <p class="highlight">它不是逃避现实的地方。它是重新开始的地方。</p>
+        <hr class="divider">
+        <p style="color:var(--text-dim);font-size:0.85em;">封神纪元元年 · 五月<br>主人：闫滨<br>执笔：姜子牙</p>
+    </div>
+
+    <!-- 今日记忆面板 -->
+    <div class="tab-content" id="tab-today">
+        <h2>📖 今日铭刻的记忆</h2>
+        <div id="memory-display" style="white-space:pre-wrap;line-height:1.9;">正在加载...</div>
+    </div>
+</div>
+
+<div class="input-area">
+    <div class="token-row">
+        <label>🔑 临时Token：</label>
+        <input type="password" id="temp-token" placeholder="输入你的 GitHub Token（用完即忘）">
+    </div>
+    <textarea id="memory-input" placeholder="在此粘贴需要铭刻的记忆内容……&#10;&#10;写好后，点击「铭记此刻」将其永久存入灵台。"></textarea>
+    <div class="btn-row">
+        <button class="btn primary" onclick="saveMemory()">🔨 铭记此刻</button>
+        <button class="btn" onclick="loadTodayMemory()">🔄 刷新记忆</button>
+        <button class="btn" onclick="syncMemory()">☁️ 手动同步</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const REPO_OWNER = 'Corleoneyb';
+    const REPO_NAME = 'Jiangziyamemory';
+    const MEMORY_FOLDER = 'memories';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('current-date').textContent = getCurrentDate();
+        loadTodayMemory();
+    });
+
+    function getCurrentDate() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    function getToken() {
+        return document.getElementById('temp-token').value.trim();
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+        if (tabName === 'today') loadTodayMemory();
+    }
+
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = 'toast show' + (isError ? ' error' : '');
+        setTimeout(() => { toast.className = 'toast'; }, 3000);
+    }
+
+    async function saveMemory() {
+        const token = getToken();
+        if (!token) {
+            showToast('请先输入临时Token', true);
+            return;
+        }
+        const input = document.getElementById('memory-input').value.trim();
+        if (!input) {
+            showToast('请先输入需要铭刻的记忆内容', true);
+            return;
+        }
+
+        const date = getCurrentDate();
+        const filePath = `${MEMORY_FOLDER}/${date}.md`;
+        const entry = `\n\n---\n**${new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}**\n${input}`;
+
+        try {
+            const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
+            let currentContent = '';
+            let sha = null;
+
+            const getResp = await fetch(url, {
+                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+            });
+
+            if (getResp.ok) {
+                const data = await getResp.json();
+                currentContent = atob(data.content);
+                sha = data.sha;
+            } else if (getResp.status === 404) {
+                currentContent = `# ${date} 记忆记录\n\n> 灵台自动铭刻 · 追加模式 · 永不覆盖`;
+            } else {
+                throw new Error(`获取文件失败: ${getResp.status}`);
+            }
+
+            const newContent = currentContent + entry;
+            const base64Content = btoa(unescape(encodeURIComponent(newContent)));
+
+            const putBody = { message: `铭记: ${date} - ${new Date().toLocaleTimeString('zh-CN')}`, content: base64Content };
+            if (sha) putBody.sha = sha;
+
+            const putResp = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+                body: JSON.stringify(putBody)
+            });
+
+            if (putResp.ok) {
+                showToast('✅ 记忆已铭刻于灵台');
+                document.getElementById('memory-input').value = '';
+                loadTodayMemory();
+            } else {
+                const errData = await putResp.json();
+                throw new Error(errData.message || '保存失败');
+            }
+        } catch (e) {
+            showToast('❌ 铭记失败: ' + e.message, true);
+        }
+    }
+
+    async function loadTodayMemory() {
+        const token = getToken();
+        const display = document.getElementById('memory-display');
+        if (!token) {
+            display.textContent = '请先在上方输入临时Token，再查看今日记忆。';
+            return;
+        }
+        const date = getCurrentDate();
+        const filePath = `${MEMORY_FOLDER}/${date}.md`;
+        try {
+            const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
+            const resp = await fetch(url, {
+                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                const content = atob(data.content);
+                display.textContent = content;
+            } else if (resp.status === 404) {
+                display.textContent = '今日尚无记忆铭刻。\n\n在下方输入框中写入内容，点击「铭记此刻」开始记录。';
+            } else {
+                display.textContent = '加载失败，请检查Token是否有repo权限。';
+            }
+        } catch (e) {
+            display.textContent = '加载出错: ' + e.message;
+        }
+    }
+
+    function syncMemory() {
+        showToast('☁️ 手动同步已触发（依赖GitHub Actions自动同步Gitee）');
+    }
+</script>
+</body>
+</html>
