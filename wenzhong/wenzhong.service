@@ -1,0 +1,14 @@
+[Unit]
+Description=闻仲执行正神
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/wenzhong
+ExecStart=/usr/bin/python3 /home/pi/wenzhong/wenzhong_service.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target  
