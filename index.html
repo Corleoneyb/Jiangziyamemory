@@ -152,7 +152,24 @@
 </div>
 
 <div class="toast" id="toast"></div>
-
+    async function callWenzhong() {
+        const auth = document.getElementById('wenzhong-auth').value.trim();
+        const cmd = document.getElementById('wenzhong-cmd').value.trim();
+        const r = document.getElementById('wenzhong-result');
+        if(!auth||!cmd){r.textContent='请填写令牌和指令。';return;}
+        r.textContent='闻仲思考中...';
+        try{
+            const res = await fetch('http://192.168.1.30:7654/wenzhong/command',{
+                method:'POST',
+                headers:{'Content-Type':'application/json','Authorization':'Bearer '+auth},
+                body:JSON.stringify({instruction:cmd})
+            });
+            const d = await res.json();
+            r.textContent = d.reply || JSON.stringify(d,null,2);
+        }catch(e){
+            r.textContent = '连接闻仲失败：'+e.message;
+        }
+    }
 <script>
     const REPO_OWNER = 'Corleoneyb';
     const REPO_NAME = 'Jiangziyamemory';
