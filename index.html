@@ -258,7 +258,7 @@
             });
             if (resp.ok) {
                 const data = await resp.json();
-                const content = atob(data.content);
+                const content = decodeURIComponent(escape(atob(data.content)));
                 display.textContent = content;
             } else if (resp.status === 404) {
                 display.textContent = '今日尚无记忆铭刻。\n\n在下方输入框中写入内容，点击「铭记此刻」开始记录。';
