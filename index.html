@@ -150,6 +150,23 @@
     const REPO_NAME = 'Jiangziyamemory';
     const MEMORY_FOLDER = 'memories';
 
+    // ========== 标准 Base64（支持UTF-8）==========
+    function toBase64(str) {
+        const bytes = new TextEncoder().encode(str);
+        let binary = '';
+        bytes.forEach(b => binary += String.fromCharCode(b));
+        return btoa(binary);
+    }
+
+    function fromBase64(base64) {
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        return new TextDecoder().decode(bytes);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('current-date').textContent = getCurrentDate();
         loadTodayMemory();
@@ -209,7 +226,7 @@
 
             if (getResp.ok) {
                 const data = await getResp.json();
-                currentContent = atob(data.content);
+                currentContent = fromBase64(data.content);
                 sha = data.sha;
             } else if (getResp.status === 404) {
                 currentContent = `# ${date} 记忆记录\n\n> 灵台自动铭刻 · 追加模式 · 永不覆盖`;
@@ -218,14 +235,21 @@
             }
 
             const newContent = currentContent + entry;
-            const base64Content = btoa(unescape(encodeURIComponent(newContent)));
+            const base64Content = toBase64(newContent);
 
-            const putBody = { message: `铭记: ${date} - ${new Date().toLocaleTimeString('zh-CN')}`, content: base64Content };
+            const putBody = {
+                message: `铭记: ${date} - ${new Date().toLocaleTimeString('zh-CN')}`,
+                content: base64Content
+            };
             if (sha) putBody.sha = sha;
 
             const putResp = await fetch(url, {
                 method: 'PUT',
-                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(putBody)
             });
 
@@ -258,7 +282,7 @@
             });
             if (resp.ok) {
                 const data = await resp.json();
-                const content = decodeURIComponent(escape(atob(data.content)));
+                const content = fromBase64(data.content);
                 display.textContent = content;
             } else if (resp.status === 404) {
                 display.textContent = '今日尚无记忆铭刻。\n\n在下方输入框中写入内容，点击「铭记此刻」开始记录。';
