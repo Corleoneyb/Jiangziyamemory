@@ -129,7 +129,15 @@
         <div id="memory-display" style="white-space:pre-wrap;line-height:1.9;">正在加载...</div>
     </div>
 </div>
-
+    <div style="border:1px solid var(--gold);border-radius:8px;padding:12px;margin-bottom:16px;">
+        <details>
+            <summary style="color:var(--gold-light);cursor:pointer;font-weight:bold;">⚡ 调遣闻仲</summary>
+            <input type="password" id="wenzhong-auth" placeholder="闻仲令牌" style="width:100%;padding:6px;margin:6px 0;background:var(--panel);border:1px solid var(--border);border-radius:4px;color:var(--text);">
+            <input type="text" id="wenzhong-cmd" placeholder="指令，如：检查系统状态" style="width:100%;padding:6px;margin-bottom:6px;background:var(--panel);border:1px solid var(--border);border-radius:4px;color:var(--text);">
+            <button class="btn" onclick="callWenzhong()">⚡ 发令</button>
+            <div id="wenzhong-result" style="white-space:pre-wrap;background:#0d0d15;padding:10px;margin-top:8px;border-radius:4px;font-size:0.85em;"></div>
+        </details>
+    </div>
 <div class="input-area">
     <div class="token-row">
         <label>🔑 临时Token：</label>
