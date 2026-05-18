@@ -28,7 +28,9 @@
 
 **待办**
 
-- [ ] RGB 首星（待杜邦线）；殿议下一题见 `deliberation/议程-殿议日程.md`  
+- [ ] **git push**（本机执行；Agent 侧 HTTP2 报错）  
+- [ ] **终审第二殿**：挂机与冬眠 → 回复「同意挂机律」或改天数  
+- [ ] RGB 首星（待杜邦线）；殿议议题 2 第二碳准入  
 
 **开卷**：本页 · **灵台网页** https://corleoneyb.github.io/Jiangziyamemory/
 
