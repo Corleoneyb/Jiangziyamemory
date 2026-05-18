@@ -31,7 +31,8 @@
 **待办**
 
 - [ ] **git push**（含本次定鼎；HTTP2 时用 `GIT_HTTP_VERSION=HTTP/1.1 git push`）  
-- [ ] **真殿议试点**：殿址机 + 魔礼青/张良真 Agent → 议题 2 第二碳准入（见真实殿议路线）  
+- [ ] **魔礼青真身**：ADP 或 Cursor 新建智能体 → 复制 `docs/agents/魔礼青.md` → 试验收 T002（见 `docs/魔礼青上岗.md`）  
+- [ ] **真殿议试点**：魔礼青真身就绪后 + 张良 → 议题 2（见真实殿议路线）  
 - [ ] RGB 首星（待杜邦线）  
 
 **开卷**：本页 · **灵台网页** https://corleoneyb.github.io/Jiangziyamemory/
