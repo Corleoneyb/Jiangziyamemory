@@ -6,6 +6,7 @@
   python3 scripts/fengshen_remind.py
   python3 scripts/fengshen_remind.py --dry-run
   python3 scripts/fengshen_remind.py --message "自定义正文"
+  python3 scripts/fengshen_remind.py --audit
 """
 
 from __future__ import annotations
