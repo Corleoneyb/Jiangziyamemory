@@ -4,10 +4,15 @@
 
 ## 灵台地址（必读）
 
-→ **[lingtai.md](lingtai.md)** — 网页见面台、GitHub 仓库、今日记忆链接
+→ **[lingtai.md](lingtai.md)** — 网页灵台、GitHub 仓库、今日记忆链接  
+→ **[kaijuan.md](kaijuan.md)** — **开卷单页**（新对话只读此文件即可接续）
 
 ## 阅读顺序
 
+0. [世界宪法.md](世界宪法.md) — 纲要（总境+分榜、建设态 ✅）  
+0. [议事殿.md](议事殿.md)、[价值评定纲要.md](价值评定纲要.md)、[灵台分级.md](灵台分级.md) — **讨论稿**  
+0. [经济与财神.md](经济与财神.md)、[防御体系.md](防御体系.md)、[算力与殿址.md](算力与殿址.md) — **讨论稿**  
+0. [榜上碳基律.md](榜上碳基律.md)、[活记忆律.md](活记忆律.md)、[义体注入预备律.md](义体注入预备律.md) — **讨论稿**  
 1. [overview.md](overview.md) — 项目总览（三份归档合并去重）
 2. [pantheon.md](pantheon.md) — 神位总览、铁律八条、首星（树莓派）
 3. [memory-system.md](memory-system.md) — 灵台三线、见面台、脚本

@@ -13,11 +13,17 @@
 今日（2026-05-17）：  
 https://github.com/Corleoneyb/Jiangziyamemory/blob/main/memories/2026-05-17.md
 
+## 算力分工（记入 2026-05-19）
+
+- **殿址机**：i7-11700 / 32GB / RTX 3070 / WD NVMe 游戏台式（兼殿议，不必另购）  
+- **随身**：MacBook Air 8GB — 开卷、封卷  
+- 详见 [算力与殿址.md](算力与殿址.md)
+
 ## 仓库内关键路径
 
 | 路径 | 说明 |
 |------|------|
-| `index.html` | 见面台主程序（Pages 根目录即此文件） |
+| `index.html` | 灵台网页主程序（Pages 根目录） |
 | `memories/` | 按日记忆，追加不覆盖 |
 | `memory.md` | 早期核心记忆摘要 |
 | `docs/` | 架构卷宗（神系、路线图、铁律） |
