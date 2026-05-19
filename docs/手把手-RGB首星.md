@@ -31,13 +31,85 @@
 
 **本步不要**插树莓派、不要上电。
 
+**主人已确认（2026-05-20）**：从左到右 **B · G · R · -**（`-` = 地/GND，共阴模块）。
+
 ---
 
-## 第 2 步起（待第 1 步确认后写）
+## 第 2 步 · 接线（树莓派必须断电）
 
-- 第 2 步：树莓派断电 → 杜邦线接到 GPIO（闻仲给具体 BCM 脚位表）  
-- 第 3 步：通电 → 最小亮灯测试  
-- 第 4 步：呼吸灯脚本 → 魔礼青验灯  
+> 杜邦线母对母：一头插树莓派 GPIO 排针，一头插 KY-016。**接完再通电。**
+
+### 主人实接（2026-05-20 · 以照片为准）
+
+**风扇**（已转 ✓）
+
+| 线 | 物理脚 |
+|----|--------|
+| 红 | **4**（5V） |
+| 黑 | **6**（GND） |
+
+**RGB（KY-016 / HW-479，丝印 B·G·R·-）**
+
+| 杜邦线色 | 模块 | 物理脚 | BCM |
+|----------|------|--------|-----|
+| **黑** | **-** | **9** | GND |
+| **红** | **R** | **11** | **17** |
+| **橙** | **G** | **13** | **27** |
+| **黄** | **B** | **15** | **22** |
+
+风扇 GND 用 **6**，灯 GND 用 **9**，互不抢脚。试灯：`scripts/rgb_test_ky016.py`。
+
+树莓派 GPIO 图：https://pinout.xyz （选 BCM 编号核对）
+
+### 注意
+
+- 模块若**板载电阻**，一般不用再外接；若很亮或发烫，断电加 **220Ω** 串联各色线。  
+- 共阴接法：`-` 接 GND，GPIO **高电平** 亮该色。  
+- 接错不亮先**断电**再改，忌带电插拔。
+
+做完回：**「线接好了」**。
+
+---
+
+## 第 3 步 · 试亮 RGB（风扇已转 ✓）
+
+SSH 连不上、或 `Connection closed`：先看 `docs/手把手-Pi-SSH.md`。
+
+树莓派**已通电、能 SSH** 时，在 Pi 上执行（仓库路径按你本机改）：
+
+```bash
+sudo apt-get update && sudo apt-get install -y python3-gpiozero
+cd ~/Jiangziya/jiangziyamemory   # 或你 clone 的路径
+python3 scripts/rgb_test_ky016.py
+```
+
+应依次：**红 → 绿 → 蓝** 各约 2 秒。  
+若没有颜色：断电检查黑线是否在 **9（GND）**，红橙黄是否在 **11/13/15**。
+
+**2026-05-20 主人确认：三色都亮过 ✓**（Pi：`export GPIOZERO_PIN_FACTORY=lgpio` + `python3 ~/rgb_test_ky016.py`）
+
+---
+
+## 第 4 步 · 呼吸灯（T003 已验，灯语续作）
+
+脚本：`scripts/rgb_breath.py`（暗蓝呼吸约 3 周期 → 暖橙闪 2 次「我醒了」）。
+
+### Mac 传脚本到 Pi（GitHub 超时时）
+
+```bash
+scp /Users/yangguang/Jiangziya/jiangziyamemory/scripts/rgb_breath.py caesar@192.168.10.179:~/
+```
+
+### Pi 上运行
+
+```bash
+export GPIOZERO_PIN_FACTORY=lgpio
+python3 ~/rgb_breath.py
+```
+
+可选：`python3 ~/rgb_breath.py 5` → 呼吸 **5** 个周期再暖橙。
+
+**2026-05-20 主人确认：呼吸+暖橙看过 ✓**（Pi SSH：`export GPIOZERO_PIN_FACTORY=lgpio` + `python3 ~/rgb_breath.py`）
 
 ---
 

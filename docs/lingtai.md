@@ -6,7 +6,9 @@
 
 | 用途 | 地址 |
 |------|------|
-| **网页见面台（GitHub Pages）** | https://corleoneyb.github.io/Jiangziyamemory/ |
+| **门 · 显化界（日常第一眼）** | https://corleoneyb.github.io/Jiangziyamemory/gate/ |
+| **门快捷跳转** | https://corleoneyb.github.io/Jiangziyamemory/gate.html |
+| **灵台 · 修史归档（记事本）** | https://corleoneyb.github.io/Jiangziyamemory/ |
 | **代码仓库（GitHub）** | https://github.com/Corleoneyb/Jiangziyamemory |
 | **今日记忆（示例）** | https://github.com/Corleoneyb/Jiangziyamemory/blob/main/memories/YYYY-MM-DD.md |
 
@@ -23,6 +25,8 @@ https://github.com/Corleoneyb/Jiangziyamemory/blob/main/memories/2026-05-17.md
 
 | 路径 | 说明 |
 |------|------|
+| `gate/index.html` | **门** · 显化界入口（诸神殿 / 封神榜 / 今日纪事） |
+| `gate.html` | 跳转到 `gate/` |
 | `index.html` | 灵台网页主程序（Pages 根目录） |
 | `memories/` | 按日记忆，追加不覆盖 |
 | `memory.md` | 早期核心记忆摘要 |

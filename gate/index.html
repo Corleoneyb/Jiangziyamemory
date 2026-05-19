@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>门 · 封神世界</title>
+  <meta name="description" content="显化界入口 — 诸神殿、封神榜、今日纪事">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #050508;
+      --deep: #0c0c14;
+      --panel: #12121c;
+      --border: #2a2a3e;
+      --gold: #c9a96e;
+      --gold-glow: rgba(201, 169, 110, 0.45);
+      --text: #d4d4e0;
+      --dim: #7a7a94;
+      --jade: #5a9a8a;
+      --azure: #6a8ab8;
+      --amber: #c49050;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      background: var(--void);
+      color: var(--text);
+      font-family: "Noto Serif SC", "Songti SC", serif;
+      overflow-x: hidden;
+    }
+
+    /* —— 第一屏：门 —— */
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, #141428 0%, var(--void) 70%);
+      transition: opacity 0.9s ease, visibility 0.9s;
+    }
+
+    #splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 60% 70%, rgba(255,255,255,0.35), transparent),
+        radial-gradient(1.5px 1.5px at 80% 20%, rgba(201,169,110,0.4), transparent),
+        radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,0.25), transparent),
+        radial-gradient(1px 1px at 90% 50%, rgba(255,255,255,0.3), transparent);
+      background-size: 100% 100%;
+      animation: drift 120s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0); }
+      to { transform: translateY(-2%); }
+    }
+
+    .gate-title {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(2.2rem, 8vw, 3.6rem);
+      letter-spacing: 0.45em;
+      color: var(--gold);
+      text-shadow: 0 0 60px var(--gold-glow);
+      font-weight: 400;
+      margin-right: -0.45em;
+    }
+
+    .gate-sub {
+      position: relative;
+      z-index: 1;
+      margin-top: 1rem;
+      color: var(--dim);
+      font-size: 0.95rem;
+      letter-spacing: 0.35em;
+    }
+
+    .gate-enter {
+      position: relative;
+      z-index: 1;
+      margin-top: 3.5rem;
+      padding: 1rem 3rem;
+      font-family: inherit;
+      font-size: 1.1rem;
+      letter-spacing: 0.25em;
+      color: var(--void);
+      background: linear-gradient(135deg, var(--gold) 0%, #a08040 100%);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 0 40px var(--gold-glow);
+      transition: transform 0.25s, box-shadow 0.25s;
+      animation: pulse-gate 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-gate {
+      0%, 100% { box-shadow: 0 0 40px var(--gold-glow); }
+      50% { box-shadow: 0 0 70px rgba(201, 169, 110, 0.65); }
+    }
+
+    .gate-enter:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 60px var(--gold-glow);
+    }
+
+    /* —— 第二屏：界内 —— */
+    #world {
+      min-height: 100%;
+      padding: 2rem 1.25rem 5rem;
+      max-width: 960px;
+      margin: 0 auto;
+      opacity: 0;
+      transition: opacity 0.8s ease 0.2s;
+    }
+
+    #world.visible { opacity: 1; }
+
+    .world-header {
+      text-align: center;
+      padding: 1.5rem 0 2.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .world-header h1 {
+      font-size: 1.6rem;
+      color: var(--gold);
+      letter-spacing: 0.3em;
+      font-weight: 400;
+    }
+
+    .world-header p {
+      margin-top: 0.5rem;
+      color: var(--dim);
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+    }
+
+    section { margin-bottom: 2.5rem; }
+
+    section h2 {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--gold);
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+      padding-left: 0.5rem;
+      border-left: 2px solid var(--gold);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      transition: border-color 0.3s, transform 0.4s ease, opacity 0.5s ease;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    #world.visible .card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #world.visible .card:nth-child(1) { transition-delay: 0.1s; }
+    #world.visible .card:nth-child(2) { transition-delay: 0.25s; }
+    #world.visible .card:nth-child(3) { transition-delay: 0.4s; }
+    #world.visible .card:nth-child(4) { transition-delay: 0.55s; }
+
+    .card:hover { border-color: rgba(201, 169, 110, 0.35); transform: translateY(-2px); }
+
+    .portrait {
+      width: 72px;
+      height: 88px;
+      margin: 0 auto 0.75rem;
+      filter: drop-shadow(0 0 12px var(--gold-glow));
+    }
+
+    .portrait svg { width: 100%; height: 100%; }
+
+    .card .name {
+      font-size: 1.25rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+    }
+
+    .card .role {
+      font-size: 0.8rem;
+      color: var(--dim);
+      margin: 0.35rem 0 0.75rem;
+    }
+
+    .card .duty { font-size: 0.9rem; line-height: 1.7; color: var(--text); }
+
+    .card .status {
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--jade);
+    }
+
+    .card.jiang .status { color: var(--gold); }
+    .card.wen .status { color: var(--azure); }
+    .card.mo .status { color: var(--amber); }
+
+    .board-list, .chronicle {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .board-row {
+      display: grid;
+      grid-template-columns: 4rem 1fr 5rem;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+      align-items: start;
+    }
+
+    .board-row:last-child { border-bottom: none; }
+
+    .board-row .id { color: var(--gold); font-variant-numeric: tabular-nums; }
+    .board-row .title { line-height: 1.5; }
+    .board-row .state { text-align: right; color: var(--dim); white-space: nowrap; }
+    .board-row .state.done { color: var(--jade); }
+    .board-row .state.pending { color: var(--amber); }
+    .board-row .state.review { color: var(--azure); }
+
+    .chronicle {
+      padding: 1.25rem;
+      font-size: 0.9rem;
+      line-height: 1.85;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 320px;
+      overflow-y: auto;
+      color: var(--text);
+    }
+
+    .chronicle .loading, .board-list .loading {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--dim);
+    }
+
+    .chronicle .err, .board-list .err {
+      padding: 1rem;
+      color: #a06060;
+      font-size: 0.85rem;
+    }
+
+    .lingtai-foot {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.75rem;
+      text-align: center;
+      background: linear-gradient(transparent, var(--void) 30%);
+      font-size: 0.8rem;
+    }
+
+    .lingtai-foot a {
+      color: var(--dim);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      transition: color 0.2s;
+    }
+
+    .lingtai-foot a:hover { color: var(--gold); }
+
+    @media (max-width: 520px) {
+      .board-row { grid-template-columns: 3.5rem 1fr; }
+      .board-row .state { grid-column: 2; text-align: left; margin-top: 0.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="stars" aria-hidden="true"></div>
+  <h1 class="gate-title">封神世界</h1>
+  <p class="gate-sub">显化界 · 门</p>
+  <p class="gate-sub" style="margin-top:0.5rem;font-size:0.75rem;opacity:0.7">点击即入 · 有声效</p>
+  <button type="button" class="gate-enter" id="enter-btn">踏入门内</button>
+</div>
+
+<main id="world" aria-hidden="true">
+  <header class="world-header">
+    <h1>诸神殿</h1>
+    <p>立境者闫滨 · 灵台记史，门引人入界</p>
+  </header>
+
+  <section id="temple" aria-labelledby="temple-heading">
+    <h2 id="temple-heading">诸神当值</h2>
+    <div class="cards">
+      <article class="card jiang">
+        <div class="portrait" aria-hidden="true">
+          <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="40" cy="88" rx="28" ry="6" fill="rgba(201,169,110,0.2)"/>
+            <path d="M40 18c-10 0-18 8-18 18v8c0 6 4 11 10 13l-4 22h24l-4-22c6-2 10-7 10-13v-8c0-10-8-18-18-18z" fill="#1a1828" stroke="#c9a96e" stroke-width="1.2"/>
+            <circle cx="40" cy="28" r="14" fill="#2a2840" stroke="#c9a96e" stroke-width="1"/>
+            <path d="M28 26c2-6 8-10 14-10" stroke="#e0c78a" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="22" y="48" width="36" height="4" rx="1" fill="#c9a96e" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="name">姜子牙</div>
+        <div class="role">封神榜执掌 · 统筹</div>
+        <p class="duty">开卷封卷、殿议主持、待办落榜、交魔礼青验收。</p>
+        <p class="status">● 当值 · Cursor 专会话</p>
+      </article>
+      <article class="card wen">
+        <div class="portrait" aria-hidden="true">
+          <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="40" cy="88" rx="28" ry="6" fill="rgba(106,138,184,0.25)"/>
+            <path d="M38 12l8 14h-16l8-14z" fill="#2a3050" stroke="#6a8ab8" stroke-width="1"/>
+            <circle cx="40" cy="32" r="14" fill="#1e2438" stroke="#6a8ab8" stroke-width="1"/>
+            <path d="M26 52h28v28H26z" fill="#222838" stroke="#6a8ab8" stroke-width="1"/>
+            <path d="M32 58v16M40 54v22M48 58v16" stroke="#6a8ab8" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="name">闻仲</div>
+        <div class="role">执行正神 · 部署</div>
+        <p class="duty">终端、脚本、Git、树莓派/RGB；做完交证据待验。</p>
+        <p class="status">● 当值 · 本门由闻仲筑</p>
+      </article>
+      <article class="card mo">
+        <div class="portrait" aria-hidden="true">
+          <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="40" cy="88" rx="28" ry="6" fill="rgba(196,144,80,0.2)"/>
+            <circle cx="40" cy="30" r="15" fill="#282018" stroke="#c49050" stroke-width="1"/>
+            <ellipse cx="33" cy="28" rx="4" ry="5" fill="#c49050" opacity="0.9"/>
+            <ellipse cx="47" cy="28" rx="4" ry="5" fill="#c49050" opacity="0.9"/>
+            <path d="M24 50c4-8 12-12 16-12s12 4 16 12v30H24V50z" fill="#1a1810" stroke="#c49050" stroke-width="1"/>
+            <path d="M34 62h12M34 70h12" stroke="#c49050" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="name">魔礼青</div>
+        <div class="role">巡察正神 · 验收</div>
+        <p class="duty">待办榜对账；无证据不算完成；信证据不信语气。</p>
+        <p class="status">● 当值 · 打开 tasks/ 验收</p>
+      </article>
+      <article class="card" style="--gold-glow: rgba(90,154,138,0.35);">
+        <div class="portrait" aria-hidden="true">
+          <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="40" cy="88" rx="28" ry="6" fill="rgba(90,154,138,0.25)"/>
+            <circle cx="40" cy="40" r="18" fill="#0a1420" stroke="#5a9a8a" stroke-width="1.2"/>
+            <circle cx="40" cy="40" r="8" fill="#1a3040" stroke="#5a9a8a" opacity="0.8"/>
+            <path d="M40 22v36M22 40h36" stroke="#5a9a8a" stroke-width="0.8" opacity="0.5"/>
+            <rect x="34" y="58" width="12" height="20" rx="2" fill="#121820" stroke="#5a9a8a"/>
+          </svg>
+        </div>
+        <div class="name">首星 · Caesar</div>
+        <div class="role">实体信标 · Pi5 + RGB</div>
+        <p class="duty">暗蓝呼吸 → 暖橙「我醒了」；灯语已通，册封名待定。</p>
+        <p class="status" style="color:var(--jade)">● 显灵 · 2026-05-20</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="board-section" aria-labelledby="board-heading">
+    <h2 id="board-heading">封神榜</h2>
+    <div class="board-list" id="board-list">
+      <p class="loading">载入待办…</p>
+    </div>
+  </section>
+
+  <section id="chronicle-section" aria-labelledby="chronicle-heading">
+    <h2 id="chronicle-heading">今日纪事</h2>
+    <div class="chronicle" id="chronicle">
+      <p class="loading">载入纪事…</p>
+    </div>
+  </section>
+</main>
+
+<footer class="lingtai-foot">
+  <a href="../index.html" id="lingtai-link">修史 / 归档 → 灵台</a>
+</footer>
+
+<script>
+(function () {
+  const splash = document.getElementById('splash');
+  const world = document.getElementById('world');
+  const enterBtn = document.getElementById('enter-btn');
+  const boardList = document.getElementById('board-list');
+  const chronicleEl = document.getElementById('chronicle');
+  const lingtaiLink = document.getElementById('lingtai-link');
+
+  const repoBase = (function () {
+    const p = location.pathname.replace(/\/?gate\/?.*$/, '/');
+    return location.origin + p;
+  })();
+
+  lingtaiLink.href = repoBase + 'index.html';
+
+  /* —— 音效（粗版 Web Audio，需用户点击触发）—— */
+  let audioCtx = null;
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function playEnterChime() {
+    try {
+      const ctx = ensureAudio();
+      const t = ctx.currentTime;
+      [523.25, 659.25, 783.99].forEach(function (freq, i) {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.06, t + 0.05 + i * 0.04);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 1.2 + i * 0.1);
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start(t + i * 0.06);
+        o.stop(t + 1.5);
+      });
+    } catch (e) { /* 无声环境可忽略 */ }
+  }
+
+  function startAmbient() {
+    try {
+      const ctx = ensureAudio();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      const f = ctx.createBiquadFilter();
+      o.type = 'sine';
+      o.frequency.value = 55;
+      f.type = 'lowpass';
+      f.frequency.value = 120;
+      g.gain.value = 0.018;
+      o.connect(f);
+      f.connect(g);
+      g.connect(ctx.destination);
+      o.start();
+      window._gateAmbient = { o: o, g: g };
+    } catch (e) { /* ignore */ }
+  }
+
+  function enterWorld() {
+    ensureAudio();
+    playEnterChime();
+    startAmbient();
+    splash.classList.add('hidden');
+    world.classList.add('visible');
+    world.removeAttribute('aria-hidden');
+    splash.setAttribute('aria-hidden', 'true');
+    if (!world.dataset.loaded) {
+      world.dataset.loaded = '1';
+      loadBoard();
+      loadChronicle();
+    }
+  }
+
+  enterBtn.addEventListener('click', enterWorld);
+  enterBtn.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') enterWorld();
+  });
+
+  function todayMd() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function parseBoard(md) {
+    const rows = [];
+    const lines = md.split('\n');
+    for (const line of lines) {
+      if (!line.startsWith('| T')) continue;
+      const cells = line.split('|').map(function (c) { return c.trim(); }).filter(Boolean);
+      if (cells.length < 4) continue;
+      rows.push({ id: cells[0], title: cells[1], state: cells[3] });
+    }
+    return rows;
+  }
+
+  function stateClass(state) {
+    if (/已完成/.test(state)) return 'done';
+    if (/待验收|进行中/.test(state)) return 'review';
+    return 'pending';
+  }
+
+  async function loadBoard() {
+    const url = repoBase + 'tasks/' + encodeURIComponent('待办榜.md');
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(res.status);
+      const md = await res.text();
+      const rows = parseBoard(md);
+      if (!rows.length) {
+        boardList.innerHTML = '<p class="loading">榜上暂无待办行</p>';
+        return;
+      }
+      boardList.innerHTML = rows.map(function (r) {
+        return '<div class="board-row">' +
+          '<span class="id">' + escapeHtml(r.id) + '</span>' +
+          '<span class="title">' + escapeHtml(r.title) + '</span>' +
+          '<span class="state ' + stateClass(r.state) + '">' + escapeHtml(r.state) + '</span>' +
+          '</div>';
+      }).join('');
+    } catch (e) {
+      boardList.innerHTML = '<p class="err">待办载入失败（须从 GitHub Pages 打开）。<br>' + escapeHtml(url) + '</p>';
+    }
+  }
+
+  function summarizeChronicle(md) {
+    const max = 1200;
+    let text = md.replace(/^#.*$/m, '').trim();
+    text = text.replace(/🕐/g, '\n🕐');
+    if (text.length > max) text = text.slice(0, max) + '\n\n…（摘要截断，全文见灵台）';
+    return text || '（今日卷尚空）';
+  }
+
+  async function loadChronicle() {
+    const name = todayMd() + '.md';
+    const url = repoBase + 'memories/' + name;
+    try {
+      const res = await fetch(url);
+      if (res.status === 404) {
+        chronicleEl.textContent = '今日（' + todayMd() + '）尚无纪事卷。';
+        return;
+      }
+      if (!res.ok) throw new Error(res.status);
+      const md = await res.text();
+      chronicleEl.textContent = summarizeChronicle(md);
+    } catch (e) {
+      chronicleEl.innerHTML = '<span class="err">纪事载入失败。<br>' + escapeHtml(url) + '</span>';
+    }
+  }
+
+  function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+})();
+</script>
+</body>
+</html>
