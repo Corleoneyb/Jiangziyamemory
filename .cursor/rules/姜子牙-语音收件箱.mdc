@@ -1,0 +1,20 @@
+---
+description: 姜子牙对话时自动处理弘尊语音收件箱
+globs:
+alwaysApply: true
+---
+
+# 姜子牙 · 语音收件箱（自动）
+
+弘尊用桌面「封神·说一句话」录入后，会写入 `inbox/弘尊语音收件箱.md` 并标记 `inbox/voice_pending.json`。
+
+**每次弘尊在本仓库发消息时，你先做：**
+
+1. 读 `inbox/voice_pending.json`；若 `processed` 为 false，读其中 `text` 与收件箱最新条目。
+2. 弘尊说 **听音** 或任意开口时，读语音收件箱并派单。
+3. **对弘尊回复一律使用简体中文**（他可说中英混合，你输出中文）。
+3. 处理完后在回复中说明「语音已处理」，并建议运行：  
+   `python3 -c "from scripts.voice_inbox_util import mark_processed; mark_processed()"`  
+   或由你在当轮回复确认后标记已处理。
+
+**说明**：Cursor 无法被外部脚本直接「推醒」对话；推微信 + 待处理标记 + 本规则 = 弘尊开口即可接续。

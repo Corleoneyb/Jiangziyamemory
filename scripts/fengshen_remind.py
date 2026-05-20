@@ -148,6 +148,8 @@ def main() -> int:
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if is_success(channel, result):
         print("发送成功。")
+        if args.audit:
+            write_audit(args.carbon, channel)
         return 0
 
     print("发送未成功，请核对 token/webhook 与 API 返回。", file=sys.stderr)

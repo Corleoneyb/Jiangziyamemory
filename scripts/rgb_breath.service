@@ -1,0 +1,15 @@
+[Unit]
+Description=封神首星灯语（暗蓝呼吸 → 暖橙）
+After=multi-user.target
+
+[Service]
+Type=oneshot
+Environment=GPIOZERO_PIN_FACTORY=lgpio
+ExecStart=/usr/bin/python3 /home/caesar/rgb_breath.py
+User=caesar
+WorkingDirectory=/home/caesar
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

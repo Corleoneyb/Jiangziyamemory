@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>手把手 · 殿址机诸神并行</title>
+<style>
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.65;color:#222;}
+h1{font-size:1.35em;border-bottom:2px solid #333;padding-bottom:8px;}
+h2{font-size:1.1em;margin-top:1.4em;}
+ol{padding-left:1.2em;}
+code,pre{background:#f4f4f4;padding:2px 6px;border-radius:4px;font-size:0.9em;}
+pre{padding:12px;overflow-x:auto;}
+a{color:#06c;}
+.note{background:#fff8e6;border:1px solid #e6c200;padding:12px;border-radius:6px;}
+</style>
+</head>
+<body>
+
+<h1>手把手 · 殿址机诸神并行</h1>
+<p class="note"><strong>给 WPS / Word：</strong>本文件为 <strong>HTML</strong>（不是苹果专有格式）。用 WPS「打开」选本文件，或拖到浏览器里看。与 <code>docs/手把手-殿址机.md</code> 内容一致。</p>
+
+<p><strong>对应</strong>：立境者殿址机（Windows 台式机）。一次一步；做完回姜子牙「第 N 步好了」。</p>
+
+<h2>这台机器干什么</h2>
+<ul>
+<li>开多个 Cursor Agent（比干、吴道子、闻仲…）并行写 deliverables/</li>
+<li>跑柏鉴程序 <code>scripts/bailian_digest.py</code>（可选定时）</li>
+<li>不要求 24h 空转：干完一批可关机，见排班文档</li>
+</ul>
+
+<h2>第 1 步 · 装 Cursor</h2>
+<ol>
+<li>浏览器打开 <a href="https://cursor.com">https://cursor.com</a></li>
+<li>下载 Windows 版，安装，登录（与 Mac 同一账号即可）</li>
+<li>打开 Cursor，能进主界面 → 回「Cursor 好了」</li>
+</ol>
+
+<h2>第 2 步 · 装 Git</h2>
+<ol>
+<li>打开 <a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a></li>
+<li>一路 Next 安装（默认即可）</li>
+<li>开始菜单搜 Git Bash，打开，输入：<pre>git --version</pre>出现 git version 2.x → 回「Git 好了」</li>
+</ol>
+
+<h2>第 3 步 · 克隆灵台</h2>
+<p>在 Git Bash 里（路径按你习惯改）：</p>
+<pre>cd ~
+git clone https://github.com/Corleoneyb/Jiangziyamemory.git
+cd Jiangziyamemory</pre>
+<p>克隆成功 → 回「仓库克隆好了」</p>
+
+<h2>第 4 步 · 装 Python（柏鉴用）</h2>
+<ol>
+<li>打开 <a href="https://www.python.org/downloads/windows/">Python Windows 下载页</a></li>
+<li>装 Python 3.12+，勾选 <strong>Add python.exe to PATH</strong></li>
+<li>Git Bash 里：<pre>python --version
+python scripts/bailian_digest.py</pre>看到【柏鉴摘要】已写入 → 回「柏鉴跑通了」</li>
+</ol>
+
+<h2>第 5 步 · 自动 push</h2>
+<pre>bash scripts/install-auto-push-hook.sh</pre>
+
+<h2>第 6 步 · 开神 Agent</h2>
+<p>见仓库 <code>docs/agents/开卷指令.md</code> 与 <code>tasks/诸神并行工单.md</code>。</p>
+
+<h2>相关链接</h2>
+<ul>
+<li><a href="殿址机-诸神24h并行.md">殿址机-诸神24h并行.md</a></li>
+<li><a href="../tasks/诸神并行工单.md">诸神并行工单.md</a></li>
+<li><a href="../deliverables/张良/排班与批次.md">排班与批次.md</a></li>
+<li><a href="../tasks/立境者红绿灯.md">立境者红绿灯.md</a>（批阅集中处）</li>
+</ul>
+
+<p><em>殿址机是产线，不是空转的灯。</em></p>
+</body>
+</html>

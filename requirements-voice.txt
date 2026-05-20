@@ -1,0 +1,8 @@
+# 语音决策通道（Mac / 殿址机 Git Bash 可用）
+SpeechRecognition>=3.10.0
+sounddevice>=0.4.6
+numpy>=1.24.0
+watchdog>=3.0.0
+faster-whisper>=1.0.0
+webrtcvad>=2.0.10
+zhconv>=1.4.3
