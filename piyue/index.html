@@ -50,9 +50,9 @@ body{background:var(--bg);color:var(--text);font-family:"Noto Serif SC","STSong"
 </div>
 <div class="wrap" id="list"></div>
 <div class="foot" id="foot" style="display:none">
-<p class="hint">点完按钮后，对本对话说「听音」或复制裁决句</p>
+<p class="hint">点完复制 → 回到 <strong>Cursor 里姜子牙这条对话</strong> 粘贴（不是发给某个微信号；微信 PushPlus 只是提醒）</p>
 <textarea id="verdict" readonly></textarea>
-<button type="button" class="btn primary" id="copyBtn">复制裁决发给姜子牙</button>
+<button type="button" class="btn primary" id="copyBtn">复制裁决 · 回 Cursor 粘贴</button>
 </div>
 <div class="modal" id="modal">
 <div class="modal-box">
@@ -75,14 +75,17 @@ const labels={approve:"同意",reject:"退回",note:"续议"};
 function hrefFor(path){
   if(!path) return "";
   if(path.startsWith("http")) return path;
-  return (path.endsWith(".md")||path.startsWith("tasks/"))?GH+path:PG+path;
+  /* 优先 Pages 同站打开 md，手机少跳 GitHub */
+  if(path.endsWith(".md")||path.endsWith(".txt")) return PG+path;
+  if(path.startsWith("tasks/")) return GH+path;
+  return PG+path;
 }
 
 function linkHtml(it){
   const parts=[];
   if(it.view) parts.push('<a href="'+hrefFor(it.view)+'" target="_blank" rel="noopener">手机版预览</a>');
   if(it.doc) parts.push('<a href="'+hrefFor(it.doc)+'" target="_blank" rel="noopener">看交付全文</a>');
-  if(it.doc2) parts.push('<a href="'+hrefFor(it.doc2)+'" target="_blank" rel="noopener">路径对比</a>');
+  if(it.doc2) parts.push('<a href="'+hrefFor(it.doc2)+'" target="_blank" rel="noopener">旧稿附录</a>');
   return parts.length?'<div class="links">'+parts.join(" · ")+'</div>':"";
 }
 
@@ -119,30 +122,33 @@ function render(){
     return;
   }
   const pending=items.filter(i=>!saved[i.id]);
+  let html="";
   if(!pending.length){
-    el.innerHTML='<div class="empty">暂无待批<br><button type="button" class="btn" id="resetBtn">清除本机记录后重批</button></div>';
-    document.getElementById("resetBtn")?.addEventListener("click",()=>{
-      localStorage.removeItem(STORAGE);
-      render();
-      toast("已清除，可重新点按钮");
-    });
-    document.getElementById("foot").style.display=Object.keys(saved).length?"block":"none";
-    updateVerdict();
-    return;
+    html+='<p class="hint" style="margin-bottom:12px">你已点过按钮。下面仍列出全部 9 条，请点「看交付」读最新稿。</p>';
+    html+='<p style="margin-bottom:14px"><button type="button" class="btn" id="resetBtn">清除本机记录后重批</button></p>';
   }
-  el.innerHTML=pending.map(it=>`
-    <article class="card">
+  html+=items.map(it=>{
+    const done=!!saved[it.id];
+    const btns=done?"":`<div class="btns">
+        <button type="button" class="btn ok" data-act="approve" data-id="${it.id}">同意</button>
+        <button type="button" class="btn no" data-act="reject" data-id="${it.id}">退回</button>
+        <button type="button" class="btn note" data-act="note" data-id="${it.id}">补充意见</button>
+      </div>`;
+    return `<article class="card" style="${done?"opacity:.9":""}">
       <h2>${it.title} ${tagFor(it.id)}</h2>
       <div class="meta">呈报 · ${it.who}</div>
       <p class="brief">${it.brief}</p>
       ${it.detail?'<p class="detail">'+it.detail+'</p>':""}
       ${linkHtml(it)}
-      <div class="btns">
-        <button type="button" class="btn ok" data-act="approve" data-id="${it.id}">同意</button>
-        <button type="button" class="btn no" data-act="reject" data-id="${it.id}">退回</button>
-        <button type="button" class="btn note" data-act="note" data-id="${it.id}">补充意见</button>
-      </div>
-    </article>`).join("");
+      ${btns}
+    </article>`;
+  }).join("");
+  el.innerHTML=html;
+  document.getElementById("resetBtn")?.addEventListener("click",()=>{
+    localStorage.removeItem(STORAGE);
+    render();
+    toast("已清除，可重新点按钮");
+  });
   document.getElementById("foot").style.display="block";
   updateVerdict();
 }
@@ -199,7 +205,7 @@ document.getElementById("modalCancel").onclick=()=>{
 document.getElementById("copyBtn").onclick=()=>{
   const t=document.getElementById("verdict");
   t.select();
-  navigator.clipboard.writeText(t.value).then(()=>toast("已复制，去微信粘贴")).catch(()=>toast("请手动全选复制"));
+  navigator.clipboard.writeText(t.value).then(()=>toast("已复制，回 Cursor 姜子牙对话粘贴")).catch(()=>toast("请手动全选复制"));
 };
 
 loadData().then(d=>{items=d;render();});
