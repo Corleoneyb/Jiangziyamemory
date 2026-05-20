@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>批阅灵台</title>
+<style>
+:root{--bg:#0a0a0f;--panel:#12121a;--border:#2a2a3a;--gold:#c9a96e;--gold-light:#e0c78a;--text:#c8c8d0;--dim:#8888a0;--green:#5a8a5a;--red:#a05050}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:"Noto Serif SC","STSong",serif;min-height:100vh;padding:16px;display:flex;flex-direction:column;align-items:center}
+.hdr{text-align:center;padding:28px 12px 16px}
+.hdr h1{font-size:1.8em;color:var(--gold);letter-spacing:.35em;font-weight:400}
+.hdr p{color:var(--dim);font-size:.85em;margin-top:8px;letter-spacing:.1em}
+.wrap{width:100%;max-width:520px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.card h2{color:var(--gold-light);font-size:1.05em;font-weight:400;margin-bottom:6px}
+.meta{color:var(--dim);font-size:.8em;margin-bottom:10px}
+.brief{line-height:1.75;font-size:.92em;margin-bottom:8px}
+.detail{color:var(--dim);font-size:.82em;line-height:1.65;margin-bottom:14px}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.links a{color:var(--gold-light);font-size:.85em;text-decoration:none;border-bottom:1px solid rgba(201,169,110,.35);padding-bottom:2px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.topnav{text-align:center;margin-bottom:12px;font-size:.85em}
+.topnav a{color:var(--gold);text-decoration:none;margin:0 8px}
+.err{color:#cc7777}
+.btn{padding:10px 16px;border:1px solid var(--gold);background:transparent;color:var(--gold);font-family:inherit;font-size:.88em;border-radius:8px;cursor:pointer}
+.btn.ok{border-color:var(--green);color:var(--green)}
+.btn.no{border-color:var(--red);color:#cc7777}
+.btn.note{border-color:var(--dim);color:var(--dim)}
+.tag{font-size:.75em;padding:2px 8px;border-radius:4px;margin-left:6px;color:var(--gold)}
+.tag.ok{color:var(--green)}.tag.no{color:var(--red)}.tag.note{color:var(--dim)}
+.foot{width:100%;max-width:520px;margin:20px 0 40px}
+.foot textarea{width:100%;min-height:100px;background:var(--panel);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:12px;font-family:inherit;font-size:.88em;line-height:1.7}
+.foot .btn.primary{width:100%;margin-top:10px;background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.empty{text-align:center;color:var(--dim);padding:40px 20px;line-height:1.8}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
+.modal.show{display:flex}
+.modal-box{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;width:100%;max-width:400px}
+.modal-box h3{color:var(--gold);font-weight:400;margin-bottom:12px}
+.modal-box textarea{width:100%;min-height:80px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px;font-family:inherit;border-radius:6px}
+.modal-btns{margin-top:12px;display:flex;gap:8px;justify-content:flex-end}
+.hint{color:var(--dim);font-size:.82em;margin-bottom:8px}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);padding:12px 20px;background:var(--panel);border:1px solid var(--gold);border-radius:8px;color:var(--gold-light);opacity:0;transition:opacity .3s;z-index:200}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="hdr"><h1>批 阅 灵 台</h1><p>待你点头 · 诸神方动</p>
+<p class="topnav"><a href="../hongzun/">弘尊一览</a> · <a href="../index.html">回灵台</a></p>
+</div>
+<div class="wrap" id="list"></div>
+<div class="foot" id="foot" style="display:none">
+<p class="hint">点完按钮后，对本对话说「听音」或复制裁决句</p>
+<textarea id="verdict" readonly></textarea>
+<button type="button" class="btn primary" id="copyBtn">复制裁决发给姜子牙</button>
+</div>
+<div class="modal" id="modal">
+<div class="modal-box">
+<h3 id="modalTitle">补充意见</h3>
+<textarea id="modalText" placeholder="写下要改的语气、长短等…"></textarea>
+<div class="modal-btns">
+<button type="button" class="btn" id="modalCancel">算了</button>
+<button type="button" class="btn ok" id="modalOk">记下</button>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const STORAGE="piyue_verdict_v1";
+const GH="https://github.com/Corleoneyb/Jiangziyamemory/blob/main/";
+const PG="https://corleoneyb.github.io/Jiangziyamemory/";
+let items=[], loadFailed=false, pendingModal=null;
+const labels={approve:"同意",reject:"退回",note:"续议"};
+
+function hrefFor(path){
+  if(!path) return "";
+  if(path.startsWith("http")) return path;
+  return (path.endsWith(".md")||path.startsWith("tasks/"))?GH+path:PG+path;
+}
+
+function linkHtml(it){
+  const parts=[];
+  if(it.view) parts.push('<a href="'+hrefFor(it.view)+'" target="_blank" rel="noopener">手机版预览</a>');
+  if(it.doc) parts.push('<a href="'+hrefFor(it.doc)+'" target="_blank" rel="noopener">看交付全文</a>');
+  if(it.doc2) parts.push('<a href="'+hrefFor(it.doc2)+'" target="_blank" rel="noopener">路径对比</a>');
+  return parts.length?'<div class="links">'+parts.join(" · ")+'</div>':"";
+}
+
+async function loadData(){
+  loadFailed=false;
+  try{
+    const r=await fetch("data.json?"+Date.now());
+    if(r.ok) return (await r.json()).items||[];
+    loadFailed=true;
+  }catch(e){loadFailed=true;}
+  return [];
+}
+
+function getSaved(){try{return JSON.parse(localStorage.getItem(STORAGE)||"{}");}catch(e){return {};}}
+function saveVerdict(id,type,note){
+  const s=getSaved();
+  s[id]={type,note:note||"",at:new Date().toISOString()};
+  localStorage.setItem(STORAGE,JSON.stringify(s));
+}
+
+function tagFor(id){
+  const v=getSaved()[id];
+  if(!v) return '<span class="tag">待批</span>';
+  const cls=v.type==="approve"?"ok":v.type==="reject"?"no":"note";
+  return '<span class="tag '+cls+'">'+(labels[v.type]||"")+'</span>';
+}
+
+function render(){
+  const saved=getSaved();
+  const el=document.getElementById("list");
+  if(loadFailed||!items.length){
+    el.innerHTML='<div class="empty err">清单未加载（网页未同步或 data.json 缺失）<br>请刷新；仍不行等一两分钟后再开<br><a href="'+PG+'piyue/data.json">检查 data.json</a></div>';
+    document.getElementById("foot").style.display="none";
+    return;
+  }
+  const pending=items.filter(i=>!saved[i.id]);
+  if(!pending.length){
+    el.innerHTML='<div class="empty">暂无待批<br><button type="button" class="btn" id="resetBtn">清除本机记录后重批</button></div>';
+    document.getElementById("resetBtn")?.addEventListener("click",()=>{
+      localStorage.removeItem(STORAGE);
+      render();
+      toast("已清除，可重新点按钮");
+    });
+    document.getElementById("foot").style.display=Object.keys(saved).length?"block":"none";
+    updateVerdict();
+    return;
+  }
+  el.innerHTML=pending.map(it=>`
+    <article class="card">
+      <h2>${it.title} ${tagFor(it.id)}</h2>
+      <div class="meta">呈报 · ${it.who}</div>
+      <p class="brief">${it.brief}</p>
+      ${it.detail?'<p class="detail">'+it.detail+'</p>':""}
+      ${linkHtml(it)}
+      <div class="btns">
+        <button type="button" class="btn ok" data-act="approve" data-id="${it.id}">同意</button>
+        <button type="button" class="btn no" data-act="reject" data-id="${it.id}">退回</button>
+        <button type="button" class="btn note" data-act="note" data-id="${it.id}">补充意见</button>
+      </div>
+    </article>`).join("");
+  document.getElementById("foot").style.display="block";
+  updateVerdict();
+}
+
+function updateVerdict(){
+  const saved=getSaved();
+  const lines=["【批阅灵台】"];
+  items.forEach(it=>{
+    const v=saved[it.id];
+    if(!v) return;
+    let line=it.id+"·"+it.title+"·"+(labels[v.type]||"");
+    if(v.note) line+="："+v.note;
+    lines.push(line);
+  });
+  document.getElementById("verdict").value=lines.length>1?lines.join("\n"):"（点过按钮后这里会出现裁决句）";
+}
+
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2200);
+}
+
+document.getElementById("list").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-act]");
+  if(!b) return;
+  const id=b.dataset.id, act=b.dataset.act;
+  if(act==="note"){
+    pendingModal={id,act};
+    const it=items.find(x=>x.id===id);
+    document.getElementById("modalTitle").textContent="补充意见 · "+(it?it.title:"");
+    document.getElementById("modalText").value="";
+    document.getElementById("modal").classList.add("show");
+    return;
+  }
+  saveVerdict(id,act,"");
+  render();
+  toast(act==="approve"?"已记同意":"已记退回");
+});
+
+document.getElementById("modalOk").onclick=()=>{
+  if(!pendingModal) return;
+  saveVerdict(pendingModal.id,pendingModal.act,document.getElementById("modalText").value.trim());
+  pendingModal=null;
+  document.getElementById("modal").classList.remove("show");
+  render();
+  toast("已记续议");
+};
+document.getElementById("modalCancel").onclick=()=>{
+  pendingModal=null;
+  document.getElementById("modal").classList.remove("show");
+};
+document.getElementById("copyBtn").onclick=()=>{
+  const t=document.getElementById("verdict");
+  t.select();
+  navigator.clipboard.writeText(t.value).then(()=>toast("已复制，去微信粘贴")).catch(()=>toast("请手动全选复制"));
+};
+
+loadData().then(d=>{items=d;render();});
+</script>
+</body>
+</html>

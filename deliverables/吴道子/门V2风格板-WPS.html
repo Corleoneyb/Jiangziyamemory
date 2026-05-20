@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>门 v2 视觉风格板 · 吴道子</title>
+<style>
+body{font-family:"Microsoft YaHei",sans-serif;max-width:900px;margin:20px auto;padding:16px;line-height:1.6;}
+h1{font-size:1.35em;}
+h2{font-size:1.1em;margin-top:1.3em;border-left:4px solid #c9a96e;padding-left:10px;}
+table{border-collapse:collapse;width:100%;margin:10px 0;}th,td{border:1px solid #ccc;padding:8px;}
+pre{background:#f5f5f5;padding:12px;overflow-x:auto;font-size:12px;}
+.note{background:#fff8e6;border:1px solid #e6c200;padding:12px;border-radius:6px;}
+</style>
+</head>
+<body>
+
+<h1>门 v2 · 视觉风格板（吴道子）</h1>
+
+<div class="note">
+<strong>找不到「门V2」？</strong> 仓库里文件名是 <code>门v2风格板.md</code>（小写 v）。<br>
+<strong>WPS 优先看本页</strong>；完整 CSS、第八章闻仲清单、第九章验收，请用 Cursor 打开同目录 <strong>门v2风格板.md</strong>（全文较长，本页为可读摘要）。
+</div>
+
+<h2>一、设计意图</h2>
+<table>
+<tr><th>维度</th><th>v0.1</th><th>v2 目标</th></tr>
+<tr><td>心理</td><td>深色页 + 按钮</td><td>进门像进影院：门外静、门内活</td></tr>
+<tr><td>纵深</td><td>单层星尘</td><td>远星 / 中雾 / 近暗角 三层</td></tr>
+<tr><td>仪式</td><td>金字 + 金按钮</td><td>门框剪影 + 门环按钮 + 暗场过渡</td></tr>
+<tr><td>进入</td><td>splash 淡出</td><td>暗场 0.35s → 界内自下方 24px 上浮</td></tr>
+</table>
+<p><strong>气质一句</strong>：虚夜为幕，封神金为灯，翠青琥珀为诸神色；灵台在角，门在中央。</p>
+
+<h2>二、设计令牌（:root 摘要）</h2>
+<p>闻仲落代码时把下面整块替换进 <code>gate/index.html</code> 的 <code>:root</code>（完整代码见 .md 文件第二节）。</p>
+<pre>:root {
+  --void: #050508;
+  --deep: #0a0a12;
+  --panel: #12121c;
+  --gold: #c9a96e;
+  --wen: #6a8ab8;
+  --mo: #c49050;
+  --star: #5a9a8a;
+  --text: #d4d4e0;
+}</pre>
+
+<h2>三、第一屏要点</h2>
+<ul>
+<li>三层背景：远星慢移、中雾反向、近暗角 vignette</li>
+<li>可选门框 <code>.gate-frame</code> 两侧竖线</li>
+<li>副标题对齐比干稿两行</li>
+<li>按钮圆角 2px、门环感；hover 微扩</li>
+</ul>
+
+<h2>四、过渡与第二屏</h2>
+<ul>
+<li><code>#splash.leaving</code> 先压暗再隐；<code>#world</code> 上浮入场</li>
+<li>新增 <code>.world-prologue</code> 引言块（比干 4 行）</li>
+<li>四卡立绘 96px 高；hover 抬升</li>
+<li>底栏「修史 / 归档」链灵台</li>
+</ul>
+
+<h2>五、音效</h2>
+<p>进入铃可三角波 + 低音铺底；可选 <code>gate/assets/ambient_gate.mp3</code> 循环 -24 LUFS。</p>
+
+<h2>六、闻仲实施清单（立境者「准」后）</h2>
+<ol>
+<li>:root 令牌 + 三层星尘 + 门框</li>
+<li>比干文案写入 splash / prologue / 四卡 / 底栏</li>
+<li>leaving + world 上浮 JS</li>
+<li>四卡 SVG 阶段 A（见立绘升级.md）</li>
+<li>prefers-reduced-motion</li>
+<li>魔礼青验 Pages</li>
+</ol>
+
+<h2>七、验收（立境者口头）</h2>
+<p>门外像门口；点击有铃、暗一下再亮；门内先读「你已过门」；灵台只在角落。</p>
+
+<hr>
+<p><strong>完整版（含全部 CSS 片段、ASCII 构图、JS 示例）</strong>：<br>
+<code>deliverables/吴道子/门v2风格板.md</code></p>
+<p><strong>批阅</strong>：改 <code>tasks/立境者红绿灯.md</code></p>
+
+</body>
+</html>
