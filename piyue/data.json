@@ -72,20 +72,20 @@
       "title": "盈利 · 白话版（赵公明）",
       "who": "赵公明",
       "hongzun": "note",
-      "hongzunNote": "不拘封神；保密；要白话",
+      "hongzunNote": "可发；渠道二神定；稿先过弘尊",
       "brief": "【待你拍板】这周三件事 + 三种路子。",
-      "detail": "不是已经赚到钱，是「怎么试」；读 md 后续议或准。",
-      "doc": "deliverables/赵公明/盈利想法-白话版.md",
-      "doc2": "deliverables/赵公明/盈利假设表.md"
+      "detail": "弘尊：可以发，渠道二神定，稿先过审。待看 `待审-首发帖草案.md`。",
+      "doc": "deliverables/范蠡/待审-首发帖草案.md",
+      "doc2": "deliverables/赵公明/盈利想法-白话版.md"
     },
     {
       "id": "9",
       "title": "怎么赚钱 · 说人话（范蠡）",
       "who": "范蠡",
       "hongzun": "note",
-      "hongzunNote": "老百姓能听懂；与8一并",
-      "brief": "【待你拍板】卖啥、谁付钱、为啥先小声试。",
-      "detail": "你的「没感觉」正常——这是假设，要试才有感觉。",
+      "hongzunNote": "可发；稿先过弘尊；测需求",
+      "brief": "【待你审帖】卖啥、谁付钱、为啥先小声试。",
+      "detail": "有没有需求=发帖才知道。草案已写，请你过目。",
       "doc": "deliverables/范蠡/怎么赚钱-说人话.md",
       "doc2": "deliverables/范蠡/最小变现单元.md"
     }
