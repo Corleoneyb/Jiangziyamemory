@@ -1,13 +1,13 @@
 {
-  "updated": "2026-05-20-v3",
+  "updated": "2026-05-22-v2",
   "items": [
     {
       "id": "1",
       "title": "门第二版文案",
       "who": "比干",
-      "hongzun": "reject",
+      "hongzun": "approve",
       "brief": "【v2.1 来访者向】轻触门环入境；无灵台/当值。",
-      "detail": "弘尊裁定：退回。比干改稿后再批。",
+      "detail": "弘尊统筹窗 2026-05-22 准。闻仲可合入 gate。",
       "doc": "deliverables/比干/门v2文案.md",
       "view": "deliverables/比干/门v2文案-WPS.htm"
     },
@@ -55,7 +55,7 @@
       "who": "闻仲",
       "hongzun": "approve",
       "brief": "文案、画面、立绘写入 gate。",
-      "detail": "文案 1 改准前，不合入第一屏文字。",
+      "detail": "红绿灯文案 1 已准（统筹窗 2026-05-22）。闻仲可按工单合入 gate。",
       "doc": "tasks/闻仲-工单-门v2落地.md"
     },
     {
@@ -71,10 +71,9 @@
       "id": "8",
       "title": "盈利 · 白话版（赵公明）",
       "who": "赵公明",
-      "hongzun": "note",
-      "hongzunNote": "可发；渠道二神定；稿先过弘尊",
-      "brief": "【待你拍板】这周三件事 + 三种路子。",
-      "detail": "弘尊：可以发，渠道二神定，稿先过审。待看 `待审-首发帖草案.md`。",
+      "hongzun": "approve",
+      "brief": "【已准】这周三件事 + 三种路子。",
+      "detail": "弘尊统筹窗 2026-05-22 准：收款个人收款码；路子甲卖模板包；路径 A 本周 P0。",
       "doc": "deliverables/范蠡/待审-首发帖草案.md",
       "doc2": "deliverables/赵公明/盈利想法-白话版.md"
     },
@@ -82,10 +81,9 @@
       "id": "9",
       "title": "怎么赚钱 · 说人话（范蠡）",
       "who": "范蠡",
-      "hongzun": "note",
-      "hongzunNote": "可发；稿先过弘尊；测需求",
-      "brief": "【待你审帖】卖啥、谁付钱、为啥先小声试。",
-      "detail": "有没有需求=发帖才知道。草案已写，请你过目。",
+      "hongzun": "approve",
+      "brief": "【已准】卖啥、谁付钱、为啥先小声试。",
+      "detail": "弘尊统筹窗 2026-05-22 准：与 8 同批 — 个人收款码；路子甲；路径 A 本周 P0。",
       "doc": "deliverables/范蠡/怎么赚钱-说人话.md",
       "doc2": "deliverables/范蠡/最小变现单元.md"
     }
