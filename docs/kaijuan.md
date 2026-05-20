@@ -16,6 +16,7 @@
 | 灵台网页 | https://corleoneyb.github.io/Jiangziyamemory/ |
 | **弘尊今日 P0** | [tasks/弘尊-P0今日.md](../tasks/弘尊-P0今日.md) |
 | **贾维斯落地总规划** | [docs/规划-姜子牙贾维斯落地.md](规划-姜子牙贾维斯落地.md) |
+| **贵档真 AI 三档方案** | [docs/贾维斯-贵档真AI方案-v1.md](贾维斯-贵档真AI方案-v1.md) |
 | 弘尊批阅台 | https://corleoneyb.github.io/Jiangziyamemory/hongzun/ |
 | 点按钮批阅 | https://corleoneyb.github.io/Jiangziyamemory/piyue/ |
 | 门 | https://corleoneyb.github.io/Jiangziyamemory/gate/ |
