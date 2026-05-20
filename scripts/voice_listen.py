@@ -24,6 +24,11 @@ def speak_ack() -> None:
     subprocess.run(["say", "-v", "Ting-Ting", "已记下"], check=False)
 
 
+def speak_quick_received() -> None:
+    """收音刚结束、转写尚未完成时先播，避免弘尊干等十几秒以为死机。"""
+    subprocess.run(["say", "-v", "Ting-Ting", "收到"], check=False)
+
+
 def save_wav(path: Path, audio_int16, samplerate: int = SAMPLERATE) -> None:
     with wave.open(str(path), "wb") as wf:
         wf.setnchannels(1)
@@ -122,7 +127,9 @@ def main() -> int:
         if wav is None:
             print("（未检测到人声，请再试）\n")
             continue
-        print("识别中…（首次可能十几秒）")
+        print("已收音，正在转写…（本机 Whisper，长句可能要十几秒）", flush=True)
+        if args.speak:
+            speak_quick_received()
         try:
             text = transcribe(wav)
         except Exception as e:
