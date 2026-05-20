@@ -37,16 +37,23 @@ def save_wav(path: Path, audio_int16, samplerate: int = SAMPLERATE) -> None:
         wf.writeframes(audio_int16.tobytes())
 
 
+def _frame_level_mean(data) -> float:
+    import numpy as np
+
+    return float(np.abs(data.astype(np.float64)).mean())
+
+
 def record_until_pause(
     *,
     end_non_speech_ms: int = 1200,
-    min_speech_ms: int = 600,
+    min_speech_ms: int = 1200,
     max_sec: float = 180,
-    vad_aggressiveness: int = 2,
+    vad_aggressiveness: int = 3,
+    peak_min: float = 120.0,
 ) -> Path | None:
-    """结束条件：人声 VAD 判定你已停说（约 1.2 秒无语音），不是环境安静。
+    """结束条件：人声 VAD + 能量门槛，减少风扇/空调误起录。
 
-    空调、鸟叫等持续噪音不应单独触发结束；只有「检测不到人声」才结束。
+    说明：本机 **没有「只认你声纹」**；要「按住再录」用 `voice_ptt.py`。
     """
     import numpy as np
     import sounddevice as sd
@@ -56,8 +63,8 @@ def record_until_pause(
     vad = webrtcvad.Vad(vad_aggressiveness)
 
     print(
-        f"…听（对着 Mac 说，说完停约 {end_non_speech_ms/1000:.1f} 秒即可；"
-        f"空调鸟叫可忽略，最长 {int(max_sec)} 秒）"
+        f"…听（对着 Mac 说，说完停约 {end_non_speech_ms/1000:.1f} 秒；"
+        f"至少约 {min_speech_ms/1000:.1f} 秒人声才落盘；最长 {int(max_sec)} 秒）"
     )
 
     chunks: list = []
@@ -77,13 +84,15 @@ def record_until_pause(
             if data is None or len(data) == 0:
                 continue
             pcm = data.tobytes()
+            level = _frame_level_mean(data)
             try:
                 is_speech = vad.is_speech(pcm, SAMPLERATE)
             except Exception:
                 is_speech = False
 
             if not in_speech:
-                if is_speech:
+                # 起录：VAD 认为像语音 **且** 本帧能量够高，避免纯环境底噪起录
+                if is_speech and level >= peak_min:
                     in_speech = True
                     chunks.append(data.copy())
                     speech_ms = FRAME_MS
@@ -113,14 +122,38 @@ def record_until_pause(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--speak", action="store_true")
+    parser.add_argument("--vad", type=int, default=3, choices=[0, 1, 2, 3], help="webrtcvad 激进程度，越大越不易把噪音当人声")
+    parser.add_argument(
+        "--min-speech-ms",
+        type=int,
+        default=1200,
+        help="至少多长「像说话」才允许停说落盘，防短促噪音",
+    )
+    parser.add_argument(
+        "--peak-min",
+        type=float,
+        default=120.0,
+        help="起录帧平均绝对幅值下限（int16）；环境仍误触可调高，如 200",
+    )
+    parser.add_argument(
+        "--cooldown",
+        type=float,
+        default=2.0,
+        help="成功写入收件箱后暂停监听秒数，防连环误触",
+    )
     args = parser.parse_args()
 
     print("【常听】直接说话，停说后记入。Ctrl+C 退出。")
+    print("【说明】常听≠只认你声音；要按住再录用：python3 scripts/voice_ptt.py")
     print(f"收件箱：{INBOX_MD}\n")
 
     while True:
         try:
-            wav = record_until_pause()
+            wav = record_until_pause(
+                vad_aggressiveness=args.vad,
+                min_speech_ms=args.min_speech_ms,
+                peak_min=args.peak_min,
+            )
         except KeyboardInterrupt:
             print("\n已退出")
             break
@@ -142,6 +175,8 @@ def main() -> int:
         append_inbox(text, "常听")
         if args.speak:
             speak_ack()
+        if args.cooldown > 0:
+            time.sleep(args.cooldown)
         print()
 
     return 0
