@@ -1,12 +1,13 @@
 {
-  "updated": "2026-05-20-v2",
+  "updated": "2026-05-20-v3",
   "items": [
     {
       "id": "1",
       "title": "门第二版文案",
       "who": "比干",
-      "brief": "【v2.1 来访者向】轻触门环入境；无灵台/当值。你曾退回，请再审此版。",
-      "detail": "点「看交付全文」见最新 md；WPS 页可能仍是旧版，以 md 为准。",
+      "hongzun": "reject",
+      "brief": "【v2.1 来访者向】轻触门环入境；无灵台/当值。",
+      "detail": "弘尊裁定：退回。比干改稿后再批。",
       "doc": "deliverables/比干/门v2文案.md",
       "view": "deliverables/比干/门v2文案-WPS.htm"
     },
@@ -14,16 +15,18 @@
       "id": "2",
       "title": "入门故事",
       "who": "比干",
-      "brief": "【v2.1 来访者向】推门影院感；你已同意。",
-      "detail": "弘尊视角已改为来访者视角，无红绿灯/殿址机口吻。",
+      "hongzun": "approve",
+      "brief": "【v2.1 来访者向】推门影院感。",
+      "detail": "来访者视角，无内部用语。",
       "doc": "deliverables/比干/入门故事.md"
     },
     {
       "id": "3",
       "title": "门第二版画面",
       "who": "吴道子",
-      "brief": "门外像门口，门内像浮出。远星、中雾、近晕三层。",
-      "detail": "进门暗场后殿面略上浮；配色与动效已备好。",
+      "hongzun": "approve",
+      "brief": "门外像门口，门内像浮出。远星、中雾、近晕。",
+      "detail": "配色与动效已备好。",
       "doc": "deliverables/吴道子/门v2风格板.md",
       "view": "deliverables/吴道子/门V2风格板-WPS.html"
     },
@@ -31,16 +34,18 @@
       "id": "4",
       "title": "四神立绘",
       "who": "吴道子",
-      "brief": "姜子牙持榜、闻仲盔纹、魔礼青竖目、首星双灯。",
-      "detail": "点头后闻仲换上画像。",
+      "hongzun": "approve",
+      "brief": "四神 SVG 方向已定。",
+      "detail": "闻仲可在合入 gate 时替换。",
       "doc": "deliverables/吴道子/立绘升级.md"
     },
     {
       "id": "5",
       "title": "门线上验收",
       "who": "魔礼青",
-      "brief": "手机宽屏进门、诸神殿、封神榜与纪事。",
-      "detail": "你已同意；魔礼青可出验收证据。",
+      "hongzun": "approve",
+      "brief": "手机宽屏进门、诸神殿、榜与纪事。",
+      "detail": "魔礼青可出 T009 验收证据。",
       "view": "gate/",
       "doc": "tasks/魔礼青验收.md"
     },
@@ -48,24 +53,28 @@
       "id": "6",
       "title": "闻仲合入线上之门",
       "who": "闻仲",
+      "hongzun": "approve",
       "brief": "文案、画面、立绘写入 gate。",
-      "detail": "你已同意；文案 1 改准前不合入第一屏文字。",
+      "detail": "文案 1 改准前，不合入第一屏文字。",
       "doc": "tasks/闻仲-工单-门v2落地.md"
     },
     {
       "id": "7",
       "title": "硬件路径 H1 主 + H5 备",
       "who": "鲁班",
-      "brief": "G0：T008 开机自启；G1：H1 采购须你准。",
-      "detail": "你已同意。",
+      "hongzun": "approve",
+      "brief": "G0 灯自启；G1 采购等你花钱批。",
+      "detail": "G0 可先验。",
       "doc": "deliverables/鲁班/硬件路径选型.md"
     },
     {
       "id": "8",
       "title": "盈利 · 白话版（赵公明）",
       "who": "赵公明",
-      "brief": "【白话首稿】这周三件事 + 三种赚钱路子 + 保密红线。",
-      "detail": "不拘封神品牌；先小范围试。姜子牙代草，请你过目后续议或准。",
+      "hongzun": "note",
+      "hongzunNote": "不拘封神；保密；要白话",
+      "brief": "【待你拍板】这周三件事 + 三种路子。",
+      "detail": "不是已经赚到钱，是「怎么试」；读 md 后续议或准。",
       "doc": "deliverables/赵公明/盈利想法-白话版.md",
       "doc2": "deliverables/赵公明/盈利假设表.md"
     },
@@ -73,8 +82,10 @@
       "id": "9",
       "title": "怎么赚钱 · 说人话（范蠡）",
       "who": "范蠡",
-      "brief": "【白话首稿】卖啥、谁付钱、为啥先不大声宣传。",
-      "detail": "无 MVU/路径代号；与 8 一并批。",
+      "hongzun": "note",
+      "hongzunNote": "老百姓能听懂；与8一并",
+      "brief": "【待你拍板】卖啥、谁付钱、为啥先小声试。",
+      "detail": "你的「没感觉」正常——这是假设，要试才有感觉。",
       "doc": "deliverables/范蠡/怎么赚钱-说人话.md",
       "doc2": "deliverables/范蠡/最小变现单元.md"
     }
