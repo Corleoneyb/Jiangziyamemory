@@ -69,7 +69,11 @@ body{background:var(--bg);color:var(--text);font-family:"Noto Serif SC","STSong"
 const STORAGE="piyue_verdict_v1";
 const GH="https://github.com/Corleoneyb/Jiangziyamemory/blob/main/";
 const PG="https://corleoneyb.github.io/Jiangziyamemory/";
-let items=[], loadFailed=false, pendingModal=null;
+let items=[], processGates=null, loadFailed=false, pendingModal=null;
+
+function esc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
 const labels={approve:"弘尊已同意",reject:"弘尊已退回",note:"弘尊续议"};
 
 function hrefFor(path){
@@ -93,10 +97,11 @@ async function loadData(){
   loadFailed=false;
   try{
     const r=await fetch("data.json?"+Date.now());
-    if(r.ok) return (await r.json()).items||[];
-    loadFailed=true;
+    if(!r.ok){loadFailed=true;return{items:[],process_gates:null};}
+    const j=await r.json();
+    return {items:j.items||[],process_gates:j.process_gates||null};
   }catch(e){loadFailed=true;}
-  return [];
+  return {items:[],process_gates:null};
 }
 
 function getSaved(){try{return JSON.parse(localStorage.getItem(STORAGE)||"{}");}catch(e){return {};}}
@@ -118,13 +123,24 @@ function tagFor(id,it){
 function render(){
   const saved=getSaved();
   const el=document.getElementById("list");
-  if(loadFailed||!items.length){
+  if(loadFailed){
     el.innerHTML='<div class="empty err">清单未加载（网页未同步或 data.json 缺失）<br>请刷新；仍不行等一两分钟后再开<br><a href="'+PG+'piyue/data.json">检查 data.json</a></div>';
     document.getElementById("foot").style.display="none";
     return;
   }
-  const pending=items.filter(i=>!saved[i.id]);
   let html="";
+  if(processGates&&processGates.title){
+    const doc=processGates.doc;
+    const docLink=doc?'<p class="links"><a href="'+hrefFor(doc)+'" target="_blank" rel="noopener">看工单全文</a></p>':"";
+    const lis=(processGates.lines||[]).map(s=>"<li>"+esc(s)+"</li>").join("");
+    html+='<article class="card" style="border:1px solid var(--gold)"><h2 style="color:var(--gold-light)">'+esc(processGates.title)+'</h2><ul style="list-style:none;padding:0;margin:0">'+lis.replace(/<li>/g,'<li style="padding:6px 0 6px 1.1em;position:relative;line-height:1.75"><span style="position:absolute;left:0;color:var(--gold)">◇</span>')+"</ul>"+docLink+"<p class=\"detail\" style=\"margin-top:10px\">本条为铁律备忘，无「同意」按钮；序号 1～9 仍为待批/已准条目。</p></article>";
+  }
+  if(!items.length){
+    el.innerHTML=html+'<div class="empty err">交付清单为空<br><a href="'+PG+'piyue/data.json">检查 data.json</a></div>';
+    document.getElementById("foot").style.display="none";
+    return;
+  }
+  const pending=items.filter(i=>!saved[i.id]);
   if(!pending.length){
     html+='<p class="hint" style="margin-bottom:12px">你已点过按钮。下面仍列出全部 9 条，请点「看交付」读最新稿。</p>';
     html+='<p style="margin-bottom:14px"><button type="button" class="btn" id="resetBtn">清除本机记录后重批</button></p>';
@@ -211,7 +227,7 @@ document.getElementById("copyBtn").onclick=()=>{
   navigator.clipboard.writeText(t.value).then(()=>toast("已复制，回 Cursor 姜子牙对话粘贴")).catch(()=>toast("请手动全选复制"));
 };
 
-loadData().then(d=>{items=d;render();});
+loadData().then(d=>{items=d.items;processGates=d.process_gates;render();});
 </script>
 </body>
 </html>

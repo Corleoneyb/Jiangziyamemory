@@ -8,6 +8,8 @@ alwaysApply: true
 
 弘尊用桌面「封神·说一句话」录入后，会写入 `inbox/弘尊语音收件箱.md` 并标记 `inbox/voice_pending.json`。
 
+**当前对话窗口** = 本 Cursor 里、跟姜子牙**这一条聊天**。处理完语音后，弘尊常需**回到本条对话**发 **听音** 或继续派单。
+
 **每次弘尊在本仓库发消息时，你先做：**
 
 1. 读 `inbox/voice_pending.json`；若 `processed` 为 false，读其中 `text` 与收件箱最新条目。
