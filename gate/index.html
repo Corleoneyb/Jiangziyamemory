@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>门 · 封神世界</title>
-  <meta name="description" content="显化界入口 — 诸神殿、封神榜、今日纪事">
+  <meta name="description" content="沉浸式入口 — 诸神殿、封神榜与今日纪事">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
@@ -46,10 +46,40 @@
       transition: opacity 0.9s ease, visibility 0.9s;
     }
 
+    #splash.leaving {
+      transition: filter 0.35s ease, opacity 0.5s ease 0.15s, visibility 0.5s ease 0.15s;
+      filter: brightness(0.35);
+    }
+
     #splash.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
+    }
+
+    .gate-frame {
+      position: absolute;
+      inset: 12% 18%;
+      border-left: 1px solid rgba(201, 169, 110, 0.14);
+      border-right: 1px solid rgba(201, 169, 110, 0.14);
+      pointer-events: none;
+      opacity: 0;
+      animation: frame-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+    }
+
+    @keyframes frame-in { to { opacity: 1; } }
+
+    .stars-mist {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 100% 80% at 50% 45%, rgba(20, 20, 40, 0.55), transparent 70%);
+      animation: drift-mist 90s linear infinite reverse;
+      pointer-events: none;
+    }
+
+    @keyframes drift-mist {
+      from { transform: translateY(0); }
+      to { transform: translateY(1.5%); }
     }
 
     .stars {
@@ -88,7 +118,27 @@
       margin-top: 1rem;
       color: var(--dim);
       font-size: 0.95rem;
-      letter-spacing: 0.35em;
+      letter-spacing: 0.12em;
+      line-height: 1.75;
+      max-width: 22em;
+      text-align: center;
+      padding: 0 1rem;
+    }
+
+    .gate-sub.fine {
+      font-size: 0.75rem;
+      opacity: 0.85;
+      margin-top: 0.5rem;
+    }
+
+    .gate-foot {
+      position: relative;
+      z-index: 1;
+      margin-top: 2rem;
+      font-size: 0.72rem;
+      color: var(--dim);
+      opacity: 0.65;
+      letter-spacing: 0.1em;
     }
 
     .gate-enter {
@@ -102,7 +152,8 @@
       color: var(--void);
       background: linear-gradient(135deg, var(--gold) 0%, #a08040 100%);
       border: none;
-      border-radius: 4px;
+      border-radius: 2px;
+      min-width: 11em;
       cursor: pointer;
       box-shadow: 0 0 40px var(--gold-glow);
       transition: transform 0.25s, box-shadow 0.25s;
@@ -126,10 +177,29 @@
       max-width: 960px;
       margin: 0 auto;
       opacity: 0;
-      transition: opacity 0.8s ease 0.2s;
+      transform: translateY(24px);
+      transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.2s,
+                  transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
     }
 
-    #world.visible { opacity: 1; }
+    #world.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .prologue {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.92rem;
+      line-height: 1.85;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .prologue p + p { margin-top: 0.75rem; color: var(--dim); }
 
     .world-header {
       text-align: center;
@@ -304,20 +374,28 @@
 
 <div id="splash">
   <div class="stars" aria-hidden="true"></div>
+  <div class="stars-mist" aria-hidden="true"></div>
+  <div class="gate-frame" aria-hidden="true"></div>
   <h1 class="gate-title">封神世界</h1>
-  <p class="gate-sub">显化界 · 门</p>
-  <p class="gate-sub" style="margin-top:0.5rem;font-size:0.75rem;opacity:0.7">点击即入 · 有声效</p>
+  <p class="gate-sub">轻触门环，入境即始。</p>
+  <p class="gate-sub fine">像推开一扇殿门，里面是另一重天色。</p>
   <button type="button" class="gate-enter" id="enter-btn">踏入门内</button>
+  <p class="gate-foot">封神演义意象 · 非历史宗教场所</p>
 </div>
 
 <main id="world" aria-hidden="true">
   <header class="world-header">
     <h1>诸神殿</h1>
-    <p>立境者闫滨 · 灵台记史，门引人入界</p>
+    <p>识界 · 名号与典故</p>
   </header>
 
+  <div class="prologue" id="prologue">
+    <p>你已过门。此处陈列<strong>名号与意象</strong>，供识界之用。</p>
+    <p>下方榜单与纪事，会随世界运转更新；空时并非无人，只是字尚未至。</p>
+  </div>
+
   <section id="temple" aria-labelledby="temple-heading">
-    <h2 id="temple-heading">诸神当值</h2>
+    <h2 id="temple-heading">诸神</h2>
     <div class="cards">
       <article class="card jiang">
         <div class="portrait" aria-hidden="true">
@@ -330,9 +408,9 @@
           </svg>
         </div>
         <div class="name">姜子牙</div>
-        <div class="role">封神榜执掌 · 统筹</div>
-        <p class="duty">开卷封卷、殿议主持、待办落榜、交魔礼青验收。</p>
-        <p class="status">● 当值 · Cursor 专会话</p>
+        <div class="role">智将 · 持榜</div>
+        <p class="duty">持榜者，谋定后动；封神演义中的智将。</p>
+        <p class="status">● 在殿</p>
       </article>
       <article class="card wen">
         <div class="portrait" aria-hidden="true">
@@ -345,9 +423,9 @@
           </svg>
         </div>
         <div class="name">闻仲</div>
-        <div class="role">执行正神 · 部署</div>
-        <p class="duty">终端、脚本、Git、树莓派/RGB；做完交证据待验。</p>
-        <p class="status">● 当值 · 本门由闻仲筑</p>
+        <div class="role">太师 · 执令</div>
+        <p class="duty">执令者，重践履；太师之象，贵在兑现。</p>
+        <p class="status">● 在殿</p>
       </article>
       <article class="card mo">
         <div class="portrait" aria-hidden="true">
@@ -361,9 +439,9 @@
           </svg>
         </div>
         <div class="name">魔礼青</div>
-        <div class="role">巡察正神 · 验收</div>
-        <p class="duty">待办榜对账；无证据不算完成；信证据不信语气。</p>
-        <p class="status">● 当值 · 打开 tasks/ 验收</p>
+        <div class="role">护法 · 察微</div>
+        <p class="duty">察微者，目锐如电；护法之名，重在可证。</p>
+        <p class="status">● 在殿</p>
       </article>
       <article class="card" style="--gold-glow: rgba(90,154,138,0.35);">
         <div class="portrait" aria-hidden="true">
@@ -376,9 +454,9 @@
           </svg>
         </div>
         <div class="name">首星 · Caesar</div>
-        <div class="role">实体信标 · Pi5 + RGB</div>
-        <p class="duty">暗蓝呼吸 → 暖橙「我醒了」；灯语已通，册封名待定。</p>
-        <p class="status" style="color:var(--jade)">● 显灵 · 2026-05-20</p>
+        <div class="role">信标 · 星灯</div>
+        <p class="duty">信标之星，暗蓝呼吸、暖橙即醒；殿侧一盏不会说谎的灯。</p>
+        <p class="status" style="color:var(--jade)">● 星亮</p>
       </article>
     </div>
   </section>
@@ -386,20 +464,22 @@
   <section id="board-section" aria-labelledby="board-heading">
     <h2 id="board-heading">封神榜</h2>
     <div class="board-list" id="board-list">
-      <p class="loading">载入待办…</p>
+      <p class="loading">载入中…</p>
     </div>
   </section>
 
   <section id="chronicle-section" aria-labelledby="chronicle-heading">
     <h2 id="chronicle-heading">今日纪事</h2>
     <div class="chronicle" id="chronicle">
-      <p class="loading">载入纪事…</p>
+      <p class="loading">载入中…</p>
     </div>
   </section>
 </main>
 
 <footer class="lingtai-foot">
-  <a href="../index.html" id="lingtai-link">修史 / 归档 → 灵台</a>
+  <span>关于本界</span>
+  <span style="opacity:0.5;margin:0 0.5em">·</span>
+  <a href="../index.html" id="lingtai-link" title="维护者">维护者</a>
 </footer>
 
 <script>
@@ -468,7 +548,11 @@
     ensureAudio();
     playEnterChime();
     startAmbient();
-    splash.classList.add('hidden');
+    splash.classList.add('leaving');
+    setTimeout(function () {
+      splash.classList.add('hidden');
+      splash.classList.remove('leaving');
+    }, 400);
     world.classList.add('visible');
     world.removeAttribute('aria-hidden');
     splash.setAttribute('aria-hidden', 'true');
@@ -518,7 +602,7 @@
       const md = await res.text();
       const rows = parseBoard(md);
       if (!rows.length) {
-        boardList.innerHTML = '<p class="loading">榜上暂无待办行</p>';
+        boardList.innerHTML = '<p class="loading">榜上暂静，候新命。</p>';
         return;
       }
       boardList.innerHTML = rows.map(function (r) {
@@ -538,7 +622,7 @@
     let text = md.replace(/^#.*$/m, '').trim();
     text = text.replace(/🕐/g, '\n🕐');
     if (text.length > max) text = text.slice(0, max) + '\n\n…（摘要截断，全文见灵台）';
-    return text || '（今日卷尚空）';
+    return text || '今日尚空，他日有字。';
   }
 
   async function loadChronicle() {
@@ -547,7 +631,7 @@
     try {
       const res = await fetch(url);
       if (res.status === 404) {
-        chronicleEl.textContent = '今日（' + todayMd() + '）尚无纪事卷。';
+        chronicleEl.textContent = '今日尚空，他日有字。';
         return;
       }
       if (!res.ok) throw new Error(res.status);
