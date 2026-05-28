@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""H1 · SSD1306 128x64 I2C 首屏测试（断电接线后再跑）。"""
+"""H1 · SSD1306 亮屏测试（不写字，避免 PIL 字体版本问题）。"""
 
 from __future__ import annotations
 
@@ -10,20 +10,22 @@ try:
     from luma.core.render import canvas
     from luma.oled.device import ssd1306
 except ImportError:
-    print("缺少 luma.oled：sudo apt install -y python3-luma.oled 或 pip3 install luma.oled")
+    print("缺少 luma.oled：sudo apt install -y python3-luma.oled")
     sys.exit(1)
 
-ADDR = 0x3C  # 少数屏为 0x3D，失败可改
+ADDR = 0x3C
 
 
 def main() -> int:
     serial = i2c(port=1, address=ADDR)
     device = ssd1306(serial)
+    device.clear()
     with canvas(device) as draw:
-        # 默认字体仅支持 ASCII；中文首屏另做（见 docs/手把手-首星OLED.md）
-        draw.text((0, 0), "Caesar", fill=255)
-        draw.text((0, 18), "H1 OLED OK", fill=255)
-    print(f"OLED OK (I2C 0x{ADDR:02X})")
+        # 白框 + 斜线 = 肉眼可见，无需字体
+        draw.rectangle(device.bounding_box, outline=255, fill=0)
+        draw.line((0, 0, device.width - 1, device.height - 1), fill=255)
+        draw.line((device.width - 1, 0, 0, device.height - 1), fill=255)
+    print(f"OLED OK (I2C 0x{ADDR:02X}) — look for X on screen")
     return 0
 
 
