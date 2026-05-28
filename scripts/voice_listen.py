@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import queue
 import subprocess
 import sys
 import time
@@ -78,14 +79,23 @@ def record_until_pause(
     non_speech_ms = 0
     t0 = time.time()
 
+    q: queue.Queue = queue.Queue()
+
+    def _on_audio(indata, _frames, _time_info, _status) -> None:
+        q.put(indata.copy())
+
     with sd.InputStream(
         samplerate=SAMPLERATE,
         channels=1,
         dtype="int16",
         blocksize=frame_len,
-    ) as stream:
+        callback=_on_audio,
+    ):
         while time.time() - t0 < max_sec:
-            data, _ = stream.read(frame_len)
+            try:
+                data = q.get(timeout=1.0)
+            except queue.Empty:
+                continue
             if data is None or len(data) == 0:
                 continue
             pcm = data.tobytes()
