@@ -57,10 +57,15 @@ def record_until_pause(
     """
     import numpy as np
     import sounddevice as sd
-    import webrtcvad
+    try:
+        import webrtcvad  # type: ignore
+    except Exception:
+        webrtcvad = None
 
     frame_len = int(SAMPLERATE * FRAME_MS / 1000)
-    vad = webrtcvad.Vad(vad_aggressiveness)
+    vad = webrtcvad.Vad(vad_aggressiveness) if webrtcvad else None
+    if vad is None:
+        print("（未安装 webrtcvad，改用能量阈值模式）")
 
     print(
         f"…听（对着 Mac 说，说完停约 {end_non_speech_ms/1000:.1f} 秒；"
@@ -85,10 +90,13 @@ def record_until_pause(
                 continue
             pcm = data.tobytes()
             level = _frame_level_mean(data)
-            try:
-                is_speech = vad.is_speech(pcm, SAMPLERATE)
-            except Exception:
-                is_speech = False
+            if vad is None:
+                is_speech = level >= peak_min
+            else:
+                try:
+                    is_speech = vad.is_speech(pcm, SAMPLERATE)
+                except Exception:
+                    is_speech = False
 
             if not in_speech:
                 # 起录：VAD 认为像语音 **且** 本帧能量够高，避免纯环境底噪起录
