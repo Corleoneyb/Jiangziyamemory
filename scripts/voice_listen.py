@@ -21,6 +21,22 @@ SAMPLERATE = 16000
 FRAME_MS = 30  # webrtcvad 仅支持 10/20/30 ms
 
 
+def _resolve_input_device(sd):
+    """优先用系统默认输入设备；无效时回退到首个可用输入设备。"""
+    try:
+        default_in = sd.default.device[0]
+        if default_in is not None and int(default_in) >= 0:
+            sd.query_devices(int(default_in), "input")
+            return int(default_in)
+    except Exception:
+        pass
+
+    for idx, dev in enumerate(sd.query_devices()):
+        if dev.get("max_input_channels", 0) > 0:
+            return idx
+    return None
+
+
 def speak_ack() -> None:
     subprocess.run(["say", "-v", "Ting-Ting", "已记下"], check=False)
 
@@ -84,11 +100,17 @@ def record_until_pause(
     def _on_audio(indata, _frames, _time_info, _status) -> None:
         q.put(indata.copy())
 
+    input_device = _resolve_input_device(sd)
+    if input_device is None:
+        raise RuntimeError("未检测到可用麦克风输入设备。")
+    print(f"（输入设备）#{input_device}")
+
     with sd.InputStream(
         samplerate=SAMPLERATE,
         channels=1,
         dtype="int16",
         blocksize=frame_len,
+        device=(input_device, None),
         callback=_on_audio,
     ):
         while time.time() - t0 < max_sec:
