@@ -20,7 +20,8 @@ def main() -> int:
     serial = i2c(port=1, address=ADDR)
     device = ssd1306(serial)
     with canvas(device) as draw:
-        draw.text((0, 0), "首星 Caesar", fill=255)
+        # 默认字体仅支持 ASCII；中文首屏另做（见 docs/手把手-首星OLED.md）
+        draw.text((0, 0), "Caesar", fill=255)
         draw.text((0, 18), "H1 OLED OK", fill=255)
     print(f"OLED OK (I2C 0x{ADDR:02X})")
     return 0
