@@ -110,7 +110,7 @@ def record_until_pause(
         channels=1,
         dtype="int16",
         blocksize=frame_len,
-        device=(input_device, None),
+        device=input_device,
         callback=_on_audio,
     ):
         while time.time() - t0 < max_sec:
